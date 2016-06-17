@@ -19,6 +19,7 @@ def index_voted(request, old1_id, old2_id, voted):
     context = {}
     context["old1"] = get_object_or_404(Selfie, pk=old1_id)
     context["old2"] = get_object_or_404(Selfie, pk=old2_id)
+    context["voted"] = voted
 
     n = len(Selfie.objects.all()) - 1
     context["s1"] = Selfie.objects.all()[randint(0, n)]
