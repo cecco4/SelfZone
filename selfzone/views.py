@@ -1,15 +1,29 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from models import SelfieForm, Selfie
 from django.contrib.auth.models import User
 from random import randint
 
 
 def index(request):
-    n = len(Selfie.objects.all()) -1
-    img1 = Selfie.objects.all()[randint(0, n)].photo
-    img2 = Selfie.objects.all()[randint(0, n)].photo
-    return render(request, 'selfzone/index.html', {'img1': img1, 'img2': img2})
+    context = {}
+
+    n = len(Selfie.objects.all()) - 1
+    context["s1"] = Selfie.objects.all()[randint(0, n)]
+    context["s2"] = Selfie.objects.all()[randint(0, n)]
+    return render(request, 'selfzone/index.html', context)
+
+
+def index_voted(request, old1_id, old2_id, voted):
+    context = {}
+    context["old1"] = get_object_or_404(Selfie, pk=old1_id)
+    context["old2"] = get_object_or_404(Selfie, pk=old2_id)
+
+    n = len(Selfie.objects.all()) - 1
+    context["s1"] = Selfie.objects.all()[randint(0, n)]
+    context["s2"] = Selfie.objects.all()[randint(0, n)]
+    return render(request, 'selfzone/index.html', context)
 
 
 def upload(request):
@@ -25,3 +39,21 @@ def upload(request):
     else:
         form = SelfieForm()
         return render(request, 'selfzone/uploadForm.html', {'form': form})
+
+
+def vote(request, s1_id, s2_id, voted):
+    s1 = get_object_or_404(Selfie, pk=s1_id)
+    s2 = get_object_or_404(Selfie, pk=s2_id)
+
+    if voted == "left":
+        s1.won += 1
+        s2.loss += 1
+    elif voted == "right":
+        s2.won += 1
+        s1.loss += 1
+
+    s1.save()
+    s2.save()
+    # return HttpResponse("Won " + str(sW.id) + ": " + str(sW.won) + "/" + str(sW.loss) + "\n" +
+    #                    "Lost " + str(sL.id) + ": " + str(sL.won) + "/" + str(sL.loss) + "\n")
+    return HttpResponseRedirect(reverse('selfzone:index_voted', args=(s1.id, s2.id, voted)))
