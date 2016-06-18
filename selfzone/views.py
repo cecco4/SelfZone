@@ -12,6 +12,8 @@ def index(request):
     n = len(Selfie.objects.all()) - 1
     context["s1"] = Selfie.objects.all()[randint(0, n)]
     context["s2"] = Selfie.objects.all()[randint(0, n)]
+
+    context["s1"].analyze()
     return render(request, 'selfzone/index.html', context)
 
 
