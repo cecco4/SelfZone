@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django import forms
+from threading import Thread
 import angus
 
 
@@ -22,6 +23,8 @@ class Selfie(models.Model):
     pub_date = models.DateTimeField('date published', default=timezone.now)
     won = models.IntegerField(default=0)
     loss = models.IntegerField(default=0)
+
+    faces = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
@@ -37,7 +40,7 @@ class Selfie(models.Model):
         res_age_gender = res['age_and_gender_estimation']
         res_expr = res['face_expression_estimation']
         res_gaze = res['gaze_analysis']
-        print "numero faccie", res_age_gender['nb_faces']
+        self.faces = int(res_age_gender['nb_faces'])
 
         tags = []
         for face in res_age_gender['faces']:
@@ -94,6 +97,11 @@ class Selfie(models.Model):
             tag = Tag.objects.get_or_create(tag=t)[0]
             self.tags.add(tag)
         self.save()
+        return self.faces
+
+    @staticmethod
+    def get_unrecognized():
+        return Selfie.objects.filter(faces=0)
 
 
 class SelfieForm(forms.ModelForm):
