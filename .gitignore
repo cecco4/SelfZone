@@ -5,3 +5,5 @@ media/
 #currently ignoring migrations
 portal/migrations
 selfzone/migrations
+
+*.pyc
