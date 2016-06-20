@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django import forms
-from threading import Thread
 import angus
 
 
@@ -23,6 +22,7 @@ class Selfie(models.Model):
     pub_date = models.DateTimeField('date published', default=timezone.now)
     won = models.IntegerField(default=0)
     loss = models.IntegerField(default=0)
+    score = models.IntegerField(default=1500)
 
     faces = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag)
@@ -102,6 +102,17 @@ class Selfie(models.Model):
     @staticmethod
     def get_unrecognized():
         return Selfie.objects.filter(faces=0)
+
+    def recalculate(self):
+        self.won = self.winner_set.count()
+        self.loss = self.loser_set.count()
+        self.save()
+
+
+class Match(models.Model):
+    winner = models.ForeignKey(Selfie, related_name="winner_set")
+    loser = models.ForeignKey(Selfie, related_name="loser_set")
+    match_date = models.DateTimeField(default=timezone.now)
 
 
 class SelfieForm(forms.ModelForm):

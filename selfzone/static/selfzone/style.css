@@ -1,0 +1,26 @@
+    .new-img {
+        display: block;
+        width: auto;
+        height: 100%;
+
+        background: #2c2c2c;
+        border-radius: 10%;
+    	box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+        margin: 0 auto;
+    }
+
+    .new-img:hover {
+    	box-shadow: 0 0 40px rgba(218, 0, 186, 1);
+    }
+
+    .old-img {
+        display: block;
+        width: auto;
+        height: 100%;
+
+        background: green;
+        border-radius: 10%;
+        box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+        padding: 5px;
+        margin: 0 auto;
+    }
