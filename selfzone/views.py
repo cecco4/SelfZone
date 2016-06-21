@@ -30,7 +30,7 @@ def select_selfies():
     # select selfies with same (or less) number of faces
     tries = 0
     f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces)
-    while f.count() == 0:
+    while f.count() <= 1:
         tries += 1
         f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces-tries)
 

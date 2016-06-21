@@ -11,4 +11,5 @@ for pic in os.listdir(path):
     s.user = user
     s.photo = File(open(os.path.join(os.path.abspath(path), pic)))
     s.save()
+    s.analyze()
     print "new selfie: ", pic

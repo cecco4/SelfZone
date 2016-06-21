@@ -1,6 +1,6 @@
 .idea
 db.sqlite3
-media/
+media
 
 #currently ignoring migrations
 portal/migrations
