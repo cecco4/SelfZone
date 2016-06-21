@@ -26,19 +26,28 @@ def select_selfies():
     # first selfie is random
     s1 = withtags.all()[randint(0, withtags.count()-1)]
 
+    tries = 0
     f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces)
+    while f.count() == 0:
+        tries += 1
+        f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces-tries)
+
+    print "Start search from ", f.count(),
     limit = f.count()/20 +5
     for t in s1.tags.order_by("-priority").all():
         if randint(0, 1000) < 20:
             continue
         old = f
         f = f.filter(tags__tag=t.tag)
+        print "("+t.tag+")down to ", f.count(),
         if f.count() < limit:
             f = old
-            break
+            continue
 
     print "selected selfies: ", f.count()
     s2 = f.all()[randint(0, f.count()-1)]
+
+    print "s1 expected:", Selfie.expected(s2.score, s1.score), "s2 expected:", Selfie.expected(s2.score, s1.score)
     return s1, s2
 
 
@@ -61,7 +70,6 @@ def upload(request):
 def vote(request, s1_id, s2_id, voted):
     s1 = get_object_or_404(Selfie, pk=s1_id)
     s2 = get_object_or_404(Selfie, pk=s2_id)
-
     winner = loser = None
     if voted == "left":
         winner = s1
@@ -70,12 +78,9 @@ def vote(request, s1_id, s2_id, voted):
         winner = s2
         loser = s1
 
-    winner.won += 1
-    loser.loss += 1
     Match.objects.create(winner=winner, loser=loser)
+    winner.win_against(loser)
 
-    s1.save()
-    s2.save()
     # return HttpResponse("Won " + str(sW.id) + ": " + str(sW.won) + "/" + str(sW.loss) + "\n" +
     #                    "Lost " + str(sL.id) + ": " + str(sL.won) + "/" + str(sL.loss) + "\n")
     return HttpResponseRedirect(reverse('selfzone:index_voted', args=(s1.id, s2.id, voted)))

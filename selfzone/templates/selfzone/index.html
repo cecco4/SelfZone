@@ -9,7 +9,7 @@
             <div class="col-sm-3"><a href="{% url 'selfzone:details' old1.id %}">
                 <img src="{{ old1.photo.url }}" class="old-img"
                 {% if voted == "left" %} style="background: green" {% endif %}></a></div>
-            <div class="col-sm-3"><h3>{{ old1.won }}/{{ old2.loss }}</h3></div>
+            <div class="col-sm-3"><h3>{{ old1.won }}/{{ old1.loss }}</h3></div>
             <div class="col-sm-3"><h3>{{ old2.won }}/{{ old2.loss }}</h3></div>
             <div class="col-sm-3"><a href="{% url 'selfzone:details' old2.id %}">
                 <img src="{{ old2.photo.url }}" class="old-img"

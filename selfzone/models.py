@@ -21,6 +21,7 @@ class Tag(models.Model):
         Tag.objects.get_or_create(tag="male",              priority=4)
         Tag.objects.get_or_create(tag="neutral",           priority=3)
         Tag.objects.get_or_create(tag="sad",               priority=3)
+        Tag.objects.get_or_create(tag="anger",             priority=3)
         Tag.objects.get_or_create(tag="happiness",         priority=3)
         Tag.objects.get_or_create(tag="surprise",          priority=3)
         Tag.objects.get_or_create(tag="center",            priority=2)
@@ -52,7 +53,7 @@ class Selfie(models.Model):
     pub_date = models.DateTimeField('date published', default=timezone.now)
     won = models.IntegerField(default=0)
     loss = models.IntegerField(default=0)
-    score = models.IntegerField(default=1500)
+    score = models.FloatField(default=1500.0)
 
     faces = models.IntegerField(default=0)
     tags = models.ManyToManyField(Tag)
@@ -124,6 +125,7 @@ class Selfie(models.Model):
 
         tags = set(tags)
         for t in tags:
+            print "get", t
             tag = Tag.objects.get(tag=t)
             self.tags.add(tag)
         self.save()
@@ -133,10 +135,40 @@ class Selfie(models.Model):
     def get_unrecognized():
         return Selfie.objects.filter(faces=0)
 
-    def recalculate(self):
-        self.won = self.winner_set.count()
-        self.loss = self.loser_set.count()
+    @staticmethod
+    def recalculate_all():
+        print "reinit data to zero"
+        for s in Selfie.objects.all():
+            s.won = 0
+            s.loss = 0
+            s.score = 1500
+            s.save()
+
+        print "calculate matches"
+        for m in Match.objects.order_by("match_date"):
+            print m.match_date,
+            m.winner.win_against(m.loser)
+
+    def win_against(self, loser):
+        self.won += 1
+        loser.loss += 1
+        self.score = Selfie.win_score(self.score, Selfie.expected(loser.score, self.score))
+        loser.score = Selfie.loss_score(loser.score, Selfie.expected(self.score, loser.score))
+        print "winner new:", self.score, "loser new:", loser.score
         self.save()
+        loser.save()
+
+    @staticmethod
+    def expected(score_b, score_a):
+        return 1 / (1 + pow(10, (score_b - score_a) / 400))
+
+    @staticmethod
+    def win_score(score, expected):
+        return score + 24 * (1 - expected)
+
+    @staticmethod
+    def loss_score(score, expected):
+        return score + 24 * (0 - expected)
 
 
 class Match(models.Model):
