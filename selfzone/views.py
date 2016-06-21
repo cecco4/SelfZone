@@ -8,10 +8,7 @@ from random import randint
 
 def index(request):
     context = {}
-
-    n = len(Selfie.objects.all()) - 1
-    context["s1"] = Selfie.objects.all()[randint(0, n)]
-    context["s2"] = Selfie.objects.all()[randint(0, n)]
+    context['s1'], context['s2'] = select_selfies()
     return render(request, 'selfzone/index.html', context)
 
 
@@ -20,11 +17,29 @@ def index_voted(request, old1_id, old2_id, voted):
     context["old1"] = get_object_or_404(Selfie, pk=old1_id)
     context["old2"] = get_object_or_404(Selfie, pk=old2_id)
     context["voted"] = voted
-
-    n = len(Selfie.objects.all()) - 1
-    context["s1"] = Selfie.objects.all()[randint(0, n)]
-    context["s2"] = Selfie.objects.all()[randint(0, n)]
+    context['s1'], context['s2'] = select_selfies()
     return render(request, 'selfzone/index.html', context)
+
+
+def select_selfies():
+    withtags = Selfie.objects.exclude(tags=None)
+    # first selfie is random
+    s1 = withtags.all()[randint(0, withtags.count()-1)]
+
+    f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces)
+    limit = f.count()/20 +5
+    for t in s1.tags.order_by("-priority").all():
+        if randint(0, 1000) < 20:
+            continue
+        old = f
+        f = f.filter(tags__tag=t.tag)
+        if f.count() < limit:
+            f = old
+            break
+
+    print "selected selfies: ", f.count()
+    s2 = f.all()[randint(0, f.count()-1)]
+    return s1, s2
 
 
 def upload(request):
@@ -35,6 +50,7 @@ def upload(request):
             instance.user = User.objects.all()[0]  # cecco
             instance.info = form.cleaned_data["info"]
             instance.save()
+            print "new salfie: ", instance, "; anlisys result: ", instance.analyze()
             return HttpResponse('Successful update')
         return HttpResponse('Data Not Valid')
     else:

@@ -10,9 +10,39 @@ import angus
 # Create your models here.
 class Tag(models.Model):
     tag = models.CharField(max_length=128)
+    priority = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.tag
+
+    @staticmethod
+    def init_tags():
+        Tag.objects.get_or_create(tag="female",            priority=4)
+        Tag.objects.get_or_create(tag="male",              priority=4)
+        Tag.objects.get_or_create(tag="neutral",           priority=3)
+        Tag.objects.get_or_create(tag="sad",               priority=3)
+        Tag.objects.get_or_create(tag="happiness",         priority=3)
+        Tag.objects.get_or_create(tag="surprise",          priority=3)
+        Tag.objects.get_or_create(tag="center",            priority=2)
+        Tag.objects.get_or_create(tag="young",             priority=2)
+        Tag.objects.get_or_create(tag="up",                priority=2)
+        Tag.objects.get_or_create(tag="left",              priority=2)
+        Tag.objects.get_or_create(tag="right",             priority=2)
+        Tag.objects.get_or_create(tag="down",              priority=2)
+        Tag.objects.get_or_create(tag="old",               priority=2)
+        Tag.objects.get_or_create(tag="baby",              priority=2)
+        Tag.objects.get_or_create(tag="head_zero",         priority=1)
+        Tag.objects.get_or_create(tag="head_down",         priority=1)
+        Tag.objects.get_or_create(tag="head_roll_left",    priority=1)
+        Tag.objects.get_or_create(tag="head_left",         priority=1)
+        Tag.objects.get_or_create(tag="head_roll_right",   priority=1)
+        Tag.objects.get_or_create(tag="head_right",        priority=1)
+        Tag.objects.get_or_create(tag="head_up",           priority=1)
+        Tag.objects.get_or_create(tag="eye_down",          priority=0)
+        Tag.objects.get_or_create(tag="eye_right",         priority=0)
+        Tag.objects.get_or_create(tag="eye_left",          priority=0)
+        Tag.objects.get_or_create(tag="eye_up",            priority=0)
+        Tag.objects.get_or_create(tag="eye_zero",          priority=0)
 
 
 class Selfie(models.Model):
@@ -94,7 +124,7 @@ class Selfie(models.Model):
 
         tags = set(tags)
         for t in tags:
-            tag = Tag.objects.get_or_create(tag=t)[0]
+            tag = Tag.objects.get(tag=t)
             self.tags.add(tag)
         self.save()
         return self.faces

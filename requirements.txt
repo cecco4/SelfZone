@@ -1,7 +1,6 @@
 angus-sdk-python==0.0.7
 Django==1.8.13
 futures==3.0.5
-pkg-resources==0.0.0
 py==1.4.31
 pytest==2.6.4
 requests==2.5.3

@@ -4,6 +4,15 @@
     <div class="row" style="max-height: 50%">
         <div class="col-sm-12"><img class="new-img" src="{{ selfie.photo.url }}"></div>
     </div>
+    <div class="row">
+        <div class="col-sm-12 text-center">
+        tags:
+            {% for t in selfie.tags.all %}
+                {{ t.tag }}{% if forloop.counter != selfie.tags.count %},{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
     <br>
     <div class="row" style="max-height: 10%">
         <div class="col-sm-2"> <h2>lasts matches: </h2> </div>
@@ -15,4 +24,5 @@
             {% endfor %}
         </div>
     </div>
+
 {% endblock body %}
