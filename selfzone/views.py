@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from models import SelfieForm, Selfie, Match
 from django.contrib.auth.models import User
 from random import randint
+from numpy.random import choice
 
 
 def index(request):
@@ -26,28 +27,41 @@ def select_selfies():
     # first selfie is random
     s1 = withtags.all()[randint(0, withtags.count()-1)]
 
+    # select selfies with same (or less) number of faces
     tries = 0
     f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces)
     while f.count() == 0:
         tries += 1
         f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces-tries)
 
-    print "Start search from ", f.count(),
-    limit = f.count()/20 +5
-    for t in s1.tags.order_by("-priority").all():
-        if randint(0, 1000) < 20:
-            continue
+    # start filtring by tags (random weighted by priority)
+    limit = f.count()*5/100 + 5
+    print "Start search from ", f.count(), limit
+
+    tag_weights = [float(i.priority)+1 for i in s1.tags.all()]
+    tag_weights = [i/sum(tag_weights) for i in tag_weights]
+    for t in choice(s1.tags.all(), s1.tags.count(), replace=False, p=tag_weights):
         old = f
         f = f.filter(tags__tag=t.tag)
         print "("+t.tag+")down to ", f.count(),
-        if f.count() < limit:
+        if f.count() < limit:   # keep only if have at least limit elements
             f = old
             continue
 
     print "selected selfies: ", f.count()
-    s2 = f.all()[randint(0, f.count()-1)]
+    # selects from filtred selfie (random weighted by delta score and number of taken match)
+    weights = []
+    for s in f.all():
+        matches = s.loser_set.filter(winner=s1).count() + s.winner_set.filter(loser=s1).count() + 1
+        delta_score = float(abs(s.score-s1.score)) + 1
+        weights.append(delta_score*matches)
+    weights = [max(weights)-i for i in weights]
+    weights = [i/sum(weights) for i in weights]
 
-    print "s1 expected:", Selfie.expected(s2.score, s1.score), "s2 expected:", Selfie.expected(s2.score, s1.score)
+    s2 = choice(f.all(), 1, p=weights)[0]
+    print "chosen: ", s2, "delta score: ", abs(s1.score-s2.score),
+    print "matches: ", s2.loser_set.filter(winner=s1).count() + s2.winner_set.filter(loser=s1).count()
+    print "s1 expected:", Selfie.expected(s2.score, s1.score), "s2 expected:", Selfie.expected(s1.score, s2.score)
     return s1, s2
 
 
