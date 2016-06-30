@@ -15,10 +15,10 @@
   <form method="post">
       {% csrf_token %}
       <p>
-        {{ form.username | add_class:"self-input" |attr:"placeholder:username" }}
+        {{ form.username |attr:"placeholder:username" }}
       </p>
       <p>
-        {{ form.password | add_class:"self-input" |attr:"placeholder:password"}}
+        {{ form.password |attr:"placeholder:password"}}
       </p>
       {% if next %}
         <input type="hidden" name="next" value="{{ next }}" />

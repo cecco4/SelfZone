@@ -49,7 +49,7 @@ class Tag(models.Model):
 class Selfie(models.Model):
     photo = models.FileField(upload_to = 'selfies/%Y/')
     user = models.ForeignKey(User)
-    info = models.CharField(max_length=200, default="selfie pic")
+    info = models.CharField(max_length=200, default="")
     pub_date = models.DateTimeField('date published', default=timezone.now)
     won = models.IntegerField(default=0)
     loss = models.IntegerField(default=0)
@@ -178,6 +178,9 @@ class Match(models.Model):
 
 
 class SelfieForm(forms.ModelForm):
+    photo = forms.FileField()
+    info = forms.CharField(widget=forms.Textarea)
+
     class Meta:
         model = Selfie
         fields = ['photo', 'info']

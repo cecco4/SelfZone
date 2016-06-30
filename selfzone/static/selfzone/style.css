@@ -65,7 +65,11 @@
 
 }
 
-.self-btn {
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #c7c7c7;
+}
+
+.self-btn, input[type="file"]::-webkit-file-upload-button {
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     background-color: #333;
@@ -80,16 +84,66 @@
     box-shadow: 0 4px 4px 0 #232323, 0 4px 4px 0 #232323;
     overflow: hidden;
     white-space: nowrap;
+
+    outline: none;
 }
 
-.self-btn:hover {
+.self-btn:hover, input[type="file"]::-webkit-file-upload-button:hover {
     background-color: #740066;
 }
 
-.self-input {
-    color: #333333;
-    border-radius: 10px;
+input[type="file"] {
+    color: #c7c7c7;
+    outline: none;
+    margin: 0 auto;
+
 }
+
+input[type="text"], input[type="password"] {
+    color: #c7c7c7;
+    margin: 0;
+    background-color: #333;
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+      touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+    background-image: none;
+    border: 1px solid #da00ba;
+    border-radius: 4px;
+
+    outline: none;
+}
+
+.input-lg {
+    color: #c7c7c7;
+    margin: 0;
+    background-color: #333;
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    background-image: none;
+    border: 1px solid #da00ba;
+    border-radius: 4px;
+
+    outline: none;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    box-shadow: 0 0 20px rgba(218, 0, 186, 1);
+}
+
 
 /* columns of same height styles */
 .row-full-height {
@@ -132,19 +186,8 @@
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: #740066;
 }
-
-/* Custom default button */
-.btn-secondary,
-.btn-secondary:hover,
-.btn-secondary:focus {
-  color: #333;
-  text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
-  border: .05rem solid #fff;
-}
-
 
 /*
  * Base structure
@@ -152,17 +195,17 @@ a:hover {
 
 html,
 body {
-  height: 100%;
-  background: repeating-linear-gradient(
+    height: 100%;
+    background: repeating-linear-gradient(
     45deg,
     #ab008f,
     #ab008f 10px,
     #333 10px,
     #333 20px
-  );
+    );
 }
 body {
-  color: #fff;
+  color: #c7c7c7;
   text-align: center;
   text-shadow: 0 .05rem .1rem rgba(0,0,0,.5);
 }

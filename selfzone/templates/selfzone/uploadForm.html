@@ -1,5 +1,13 @@
-<form enctype="multipart/form-data" method="post">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
-</form>
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block body %}
+    <form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+        <p> {{ form.photo }} </p>
+        <p> {{ form.info |add_class:"input-lg" |attr:"placeholder:picture description" |attr:"cols:20" |attr:"rows:3" |attr:"wrap:hard" |set_data:"limit-rows:true"}} </p>
+
+    <input type="submit" value="Submit" class="self-btn"/>
+    </form>
+
+{% endblock body %}

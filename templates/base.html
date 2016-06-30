@@ -2,8 +2,8 @@
 
 <html>
     <head>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="{% static 'selfzone/bootstrap.css'%}">
+        <link rel="stylesheet" type="text/css" href="{% static 'selfzone/bootstrap-theme.css'%}">
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lobster" />
         <link rel="stylesheet" type="text/css" href="{% static 'selfzone/style.css' %}" />
         {% block head %}
@@ -15,22 +15,22 @@
     <div class="back-container">
 
         {% block header %}
-            <div class="row row-same-height" style="min-width: 400px;">
+            <div style="min-width: 400px;">
               <div class="row-same-height">
 
                 <div class="col-sm-4 col-sm-height"></div>
                 <div class="col-sm-4 col-sm-height" style="padding-bottom: 20px">
                     <h1 class="self-title">Selfzone</h1>
                 </div>
-                <div class="col-sm-4 col-sm-height" style="display:inline-block;">
-                    {% if request.path|slice:":6" != "/login" %}
+                <div class="col-sm-4 col-sm-height">
+                    {% if request.path|slice:":6" != "/login" and request.path|slice:":7" != "/portal" %}
                         {% if not user.is_authenticated %}
                             <a href="{% url 'portal:portal_welcome' %}">
                                 <button type="button" class="self-btn">Sign in</button>
                             </a>
                         {% else %}
-                            <a href="{% url 'logout_view' %}">
-                                <button type="button" class="self-btn">log out</button>
+                            <a href="{% url 'portal:portal_welcome' %}">
+                                <button type="button" class="self-btn">profile</button>
                             </a>
                         {% endif %}
                     {% endif %}
@@ -41,6 +41,9 @@
 
         {% block body %} {% endblock body %}
 
+    <footer style="padding-top: 30px">
+        <span>&copy; 2016, Dinocat</span>
+    </footer>
     </div>
     </body>
 </html>

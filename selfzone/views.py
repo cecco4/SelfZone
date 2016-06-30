@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.decorators.cache import cache_control
+from django.contrib.auth.decorators import login_required
 from models import SelfieForm, Selfie, Match
 from django.contrib.auth.models import User
 from random import randint
@@ -68,6 +69,7 @@ def select_selfies():
     return s1, s2
 
 
+@login_required
 def upload(request):
     if request.method == 'POST':
         form = SelfieForm(request.POST, request.FILES)
