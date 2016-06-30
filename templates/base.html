@@ -4,23 +4,28 @@
     <head>
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lobster" />
         <link rel="stylesheet" type="text/css" href="{% static 'selfzone/style.css' %}" />
-
         {% block head %}
             <title>Selfzone</title>
         {% endblock head %}
     </head>
     <body>
 
-    {% block header %}
-    <div class="container-fluid text-center">
-        <div class="row">
-            <div class="col-sm-12"><h1>Selfzone</h1></div>
+    <div class="container-fluid fill" style="max-width: 1200px; background-color: #333;
+            box-shadow: 20px 0 40px #333, -20px 0 40px #333, 0 -20px 40px #333, 0 20px 40px #333;
+            border-bottom-left-radius: 5%; border-bottom-right-radius: 5%">
+
+        {% block header %}
+        <div class="container-fluid text-center">
+            <div class="row">
+                <div class="col-sm-12" style="padding: 20px"><h1 class="self-title">Selfzone</h1></div>
+            </div>
         </div>
+        {% endblock header %}
+
+        {% block body %} {% endblock body %}
+
     </div>
-    {% endblock header %}
-
-    {% block body %} {% endblock body %}
-
     </body>
 </html>
