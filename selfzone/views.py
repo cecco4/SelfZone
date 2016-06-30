@@ -1,18 +1,21 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.views.decorators.cache import cache_control
 from models import SelfieForm, Selfie, Match
 from django.contrib.auth.models import User
 from random import randint
 from numpy.random import choice
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
     context = {}
     context['s1'], context['s2'] = select_selfies()
     return render(request, 'selfzone/index.html', context)
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index_voted(request, old1_id, old2_id, voted):
     context = {}
     context["old1"] = get_object_or_404(Selfie, pk=old1_id)

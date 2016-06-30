@@ -21,7 +21,7 @@
     background: #2c2c2c;
     border-radius: 10%;
     box-shadow: 0 0 8px rgba(0, 0, 0, .8);
-    margin: 0 auto;
+    margin: auto auto;
 }
 
 .new-img:hover {
@@ -38,7 +38,7 @@
     border-radius: 10%;
     box-shadow: 0 0 8px rgba(0, 0, 0, .8);
     padding: 5px;
-    margin: 0 auto;
+    margin: auto auto;
 }
 
 .last-img {
