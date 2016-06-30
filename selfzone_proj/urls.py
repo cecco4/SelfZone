@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^portal/', include('portal.urls', namespace="portal")),
 
-    url(r'^$', views.main_page),
+    url(r'^$', include('selfzone.urls', namespace="selfzone")),
     url(r'^logout/$', views.logout_view, name='logout_view'),
     url(r'^', include('django.contrib.auth.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

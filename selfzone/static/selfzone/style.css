@@ -1,3 +1,18 @@
+.back-container {
+    padding-right:15px;
+    padding-left:15px;
+    margin-right:auto;
+    margin-left:auto;
+
+    min-width: 400px;
+    max-width: 1200px;
+    background-color: #333;
+
+    box-shadow: 10px 0 10px #333, -10px 0 10px #333;
+    height: auto;
+    min-height: 100%;
+}
+
 .new-img {
     display: block;
     width: 85%;
@@ -17,7 +32,7 @@
     display: block;
     width: 30%;
     height: auto;
-    min-width: 100px;
+    min-width: 70px;
 
     background: red;
     border-radius: 10%;
@@ -48,6 +63,68 @@
                 -1px -1px 0 #740066, 1px -1px 0 #740066, -1px 1px 0 #740066,
                 4px 4px 4px #da00ba;
 
+}
+
+.self-btn {
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    background-color: #333;
+    font-size: 20px;
+    color: #da00ba;
+    border-radius: 20%;
+    border: 4px solid #da00ba;
+	font-family: Lobster;
+    text-shadow: 2px 0 0 #232323, -2px 0 0 #232323, 0 2px 0 #232323, 0 -2px 0 #232323, 1px 1px #232323,
+            -1px -1px 0 #232323, 1px -1px 0 #232323, -1px 1px 0 #232323;
+
+    box-shadow: 0 4px 4px 0 #232323, 0 4px 4px 0 #232323;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.self-btn:hover {
+    background-color: #740066;
+}
+
+.self-input {
+    color: #333333;
+}
+
+/* columns of same height styles */
+.row-full-height {
+  height: 100%;
+}
+.col-full-height {
+  height: 100%;
+  vertical-align: middle;
+}
+.row-same-height {
+  display: table;
+  width: 100%;
+  /* fix overflow */
+  table-layout: fixed;
+}
+.col-xs-height {
+  display: table-cell;
+  float: none !important;
+}
+@media (min-width: 768px) {
+  .col-sm-height {
+    display: table-cell;
+    float: none !important;
+  }
+}
+@media (min-width: 992px) {
+  .col-md-height {
+    display: table-cell;
+    float: none !important;
+  }
+}
+@media (min-width: 1200px) {
+  .col-lg-height {
+    display: table-cell;
+    float: none !important;
+  }
 }
 
 /* Links */

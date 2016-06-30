@@ -1,15 +1,13 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
+
 {% comment %}   Main page to authenticate users. {% endcomment %}
 {% block head %}
   <title>Django Mysite | Login</title>
 {% endblock %}
 
 {% block body %}
-  <header>
-    <h1>Django Mysite</h1>
-    <h2>Login Page</h2>
-  </header>
-  <section>
+  <section style="padding-top: 50px;">
     {% if form.errors %}
       <p>Your username and password didn't match, please try again.</p>
     {% endif %}
@@ -17,18 +15,17 @@
   <form method="post">
       {% csrf_token %}
       <p>
-        {{ form.username.label_tag }}
-        {{ form.username }}
-      </p>  <p>
-        {{ form.password.label_tag }}
-        {{ form.password }}
+        {{ form.username | add_class:"self-input" |attr:"placeholder:username" }}
+      </p>
+      <p>
+        {{ form.password | add_class:"self-input" |attr:"placeholder:password"}}
       </p>
       {% if next %}
         <input type="hidden" name="next" value="{{ next }}" />
       {% else %}
         <input type="hidden" name="next" value="/portal/" />
       {% endif %}
-      <input type="submit" value="login" />
+      <input type="submit" class="self-btn" value="login" />
     </form>
   </section>
 {% endblock %}
