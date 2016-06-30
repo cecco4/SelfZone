@@ -23,10 +23,16 @@
                     <h1 class="self-title">Selfzone</h1>
                 </div>
                 <div class="col-sm-4 col-sm-height" style="display:inline-block;">
-                    {% if not user.is_authenticated and request.path|slice:":6" != "/login" %}
-                        <a href="{% url 'portal:portal_welcome' %}">
-                            <button type="button" class="self-btn">Sign in</button>
-                        </a>
+                    {% if request.path|slice:":6" != "/login" %}
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'portal:portal_welcome' %}">
+                                <button type="button" class="self-btn">Sign in</button>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'logout_view' %}">
+                                <button type="button" class="self-btn">log out</button>
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
               </div>
