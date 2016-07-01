@@ -75,7 +75,7 @@ def upload(request):
         form = SelfieForm(request.POST, request.FILES)
         if form.is_valid():
             instance = Selfie(photo=request.FILES['photo'])
-            instance.user = User.objects.all()[0]  # cecco
+            instance.user = request.user
             instance.info = form.cleaned_data["info"]
             instance.save()
             print "new salfie: ", instance, "; anlisys result: ", instance.analyze()

@@ -16,4 +16,16 @@
     <a href="{% url 'logout_view' %}">
         <button type="button" class="self-btn" style="margin: 20px">logout</button>
     </a>
+
+    <br>
+    <div class="row">
+        <div class="col-sm-12">
+            {% for s in selfies %}
+                <a href="{% url 'selfzone:details' s.id %}"><img
+                        class="last-img pull-left"
+                        src="{{ s.photo.url }}"></a>
+            {% endfor %}
+        </div>
+    </div>
+
 {% endblock %}
