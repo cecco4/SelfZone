@@ -5,7 +5,7 @@
   <div class="container-fluid" style="min-width: 300px;">
 
       {% if old1 and old2 %}
-        <div class="row" style="padding-left: 10px; padding-right: 10px;">
+        <div class="row" style="display:inline-block; padding-left: 10px; padding-right: 10px;">
             <div class="col-xs-3"><a href="{% url 'selfzone:details' old1.id %}">
                 <img src="{{ old1.photo.url }}" class="old-img"
                 {% if voted == "left" %} style="background: green" {% endif %}></a></div>
