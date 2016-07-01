@@ -1,5 +1,6 @@
 angus-sdk-python==0.0.7
 Django==1.8.13
+django-mathfilters==0.4.0
 django-widget-tweaks==1.4.1
 futures==3.0.5
 numpy==1.11.0

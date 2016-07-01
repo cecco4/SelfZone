@@ -13,7 +13,18 @@ def portal_welcome(request):
     take them to the login page.
     """
     context = {'request': request}
-    context["selfies"] = Selfie.objects.filter(user=request.user).all()
-    print context["selfies"]
+    selfies = []
+    for s in Selfie.objects.filter(user=request.user).all():
+        if s.won + s.loss == 0:
+            wp = 50
+        else:
+            wp = float(s.won)*100/float(s.won+s.loss)
+
+        wp = 10 if wp < 10 else wp
+        wp = 90 if wp > 90 else wp
+        selfies.append({"s": s, "w": wp})
+        print wp
+
+    context["selfies"] = selfies
     return render(request, 'portal/index.html', context)
 

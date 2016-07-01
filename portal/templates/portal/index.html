@@ -1,9 +1,11 @@
 {% extends "portal/portal.html" %}
+{% load mathfilters %}
+
 {% comment %}   Welcome page of the portal. {% endcomment %}
 {% block title %}   Portal {% endblock %}
 {% block content %}
 
-    <h2>Welcome, {{ user.username | capfirst }}</h2>
+    <h2 xmlns="http://www.w3.org/1999/html">Welcome, {{ user.username | capfirst }}</h2>
 
     <a href="{% url 'selfzone:index' %}">
         <button type="button" class="self-btn" style="margin: 20px">vote</button>
@@ -18,11 +20,17 @@
     </a>
 
     <br>
+
+
     <div class="photos">
         {% for s in selfies %}
-            <a href="{% url 'selfzone:details' s.id %}"><img
-
-                    src="{{ s.photo.url }}"></a>
+            <a href="{% url 'selfzone:details' s.s.id %}">
+                <img src="{{ s.s.photo.url }}">
+                <div class="status-bar">
+                    <div class="win-bar" style="width:{{s.w}}%"></div>
+                    <div class="loss-bar" style="width:{{ s.w | add:-100 | abs }}%"></div>
+                </div>
+            </a>
         {% endfor %}
     </div>
 {% endblock %}
