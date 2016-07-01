@@ -2,12 +2,27 @@
 {% load widget_tweaks %}
 
 {% block body %}
+
     <form enctype="multipart/form-data" method="post">
     {% csrf_token %}
-        <p> {{ form.photo }} </p>
+        <p><div class="fakeFileButton"><span id="browse">click to load selfie</span>{{ form.photo }}</div></p>
         <p> {{ form.info |add_class:"input-lg" |attr:"placeholder:picture description" |attr:"cols:20" |attr:"rows:3" |attr:"wrap:hard" |set_data:"limit-rows:true"}} </p>
 
     <input type="submit" value="Submit" class="self-btn"/>
     </form>
 
+    <script type='text/javascript'>
+        var input = document.getElementById('id_photo');
+
+        input.onchange = function () {
+            var text = document.getElementById('browse');
+            text.innerHTML = this.value.split(/(\\|\/)/g).pop();
+            text.style.color = "#c7c7c7";
+            text.style.fontSize = 14;
+            console.log(text.offsetWidth , input.offsetWidth);
+            if (text.offsetWidth > input.offsetWidth) {
+                text.innerHTML = text.innerHTML.substr(0, 35) + "... "
+            }
+        };
+    </script>
 {% endblock body %}

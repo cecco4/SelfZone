@@ -69,7 +69,7 @@
     color:    #c7c7c7;
 }
 
-.self-btn, input[type="file"]::-webkit-file-upload-button {
+.self-btn {
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     background-color: #333;
@@ -88,15 +88,54 @@
     outline: none;
 }
 
-.self-btn:hover, input[type="file"]::-webkit-file-upload-button:hover {
+.self-btn:hover {
     background-color: #740066;
 }
 
-input[type="file"] {
-    color: #c7c7c7;
-    outline: none;
-    margin: 0 auto;
+* {
+  box-sizing: border-box;
+}
+input[type=file] {
+    position: absolute;
+    top:-5px; /* size of border */
+    left:-5px; /* size of border */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: 240px;
+    height: 50px;
+    border: 1px solid red;
+    opacity: 0; /* hide actual input */
+    cursor: pointer
+}
 
+.fakeFileButton {
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    background-color: #333;
+    font-size: 20px;
+    color: #da00ba;
+    border-radius: 20%;
+    border: 4px solid #da00ba;
+	font-family: Lobster;
+    text-shadow: 2px 0 0 #232323, -2px 0 0 #232323, 0 2px 0 #232323, 0 -2px 0 #232323, 1px 1px #232323,
+            -1px -1px 0 #232323, 1px -1px 0 #232323, -1px 1px 0 #232323;
+
+    box-shadow: 0 4px 4px 0 #232323, 0 4px 4px 0 #232323;
+    overflow: hidden;
+    white-space: nowrap;
+
+    outline: none;
+    position: relative;
+    margin: 0 auto;
+    padding: 0;
+    width: 240px; /* same as button */
+    height: 50px; /* same as button */
+    text-align: center;
+    line-height: 40px;
+}
+.fakeFileButton:hover {
+    background-color: #740066;
 }
 
 input[type="text"], input[type="password"] {
