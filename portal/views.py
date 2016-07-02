@@ -19,9 +19,6 @@ def portal_welcome(request):
             wp = 50
         else:
             wp = float(s.won)*100/float(s.won+s.loss)
-
-        wp = 10 if wp < 10 else wp
-        wp = 90 if wp > 90 else wp
         selfies.append({"s": s, "w": wp})
         print wp
 

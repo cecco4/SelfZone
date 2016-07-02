@@ -25,11 +25,13 @@
     <div class="photos">
         {% for s in selfies %}
             <a href="{% url 'selfzone:details' s.s.id %}">
-                <img src="{{ s.s.photo.url }}">
-                <div class="status-bar">
-                    <div class="win-bar" style="width:{{s.w}}%"></div>
-                    <div class="loss-bar" style="width:{{ s.w | add:-100 | abs }}%"></div>
-                </div>
+                <figure>
+                    <img src="{{ s.s.photo.url }}">
+                    <div class="status-bar">
+                        <div class="win-bar" style="width:calc({{s.w}}% + 1px)"></div>
+                        <div class="loss-bar" style="width:calc({{ s.w | add:-100 | abs }}% + 1px)"></div>
+                    </div>
+                </figure>
             </a>
         {% endfor %}
     </div>

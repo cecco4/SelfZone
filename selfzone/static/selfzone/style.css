@@ -1,6 +1,6 @@
 .new-img {
     display: block;
-    width: 85%;
+    width: 70%;
     height: auto;
 
     background: #2c2c2c;
@@ -258,56 +258,58 @@ body {
 
 /* image grid */
 .photos {
-    /* Prevent vertical gaps */
-    line-height: 10px;
+    display: flex;
+    flex-wrap: wrap;
     padding: 20px;
+}
 
-    -webkit-column-count: 5;
-    -webkit-column-gap:   10px;
-    -moz-column-count:    5;
-    -moz-column-gap:      10px;
-    column-count:         5;
-    column-gap:           10px;
+.photos a {
+  display: inline-block;
+  margin-bottom: 8px;
+  width: calc(50% - 4px);
+  margin-right: 8px;
+  text-decoration: none;
+  color: black;
+}
+
+.photos a:nth-of-type(2n) {
+  margin-right: 0;
+}
+
+@media screen and (min-width: 50em) {
+  .photos a {
+    width: calc(25% - 6px);
+  }
+
+  .photos a:nth-of-type(2n) {
+    margin-right: 8px;
+  }
+
+  .photos a:nth-of-type(4n) {
+    margin-right: 0;
+  }
+}
+
+.photos figure {
+    border-radius: 5%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+    margin: 0;
+    overflow: hidden;
+
+    -webkit-transform: translateZ(0);
+}
+
+.photos img:hover {
+  transform: scale(1.15);
 }
 
 .photos img {
-    /* Just in case there are inline attributes */
-    width: 100% !important;
-    height: auto !important;
-    border-radius: 20px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, .8);
-
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-@media (max-width: 1200px) {
-  .photos {
-  -moz-column-count:    4;
-  -webkit-column-count: 4;
-  column-count:         4;
-  }
-}
-@media (max-width: 1000px) {
-  .photos {
-  -moz-column-count:    3;
-  -webkit-column-count: 3;
-  column-count:         3;
-  }
-}
-@media (max-width: 800px) {
-  .photos {
-  -moz-column-count:    2;
-  -webkit-column-count: 2;
-  column-count:         2;
-  }
-}
-@media (max-width: 400px) {
-  .photos {
-  -moz-column-count:    1;
-  -webkit-column-count: 1;
-  column-count:         1;
-  }
+  border: none;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  background: #333;
+  transition: transform .2s ease-in-out;
 }
 
 .status-bar {
@@ -322,19 +324,18 @@ body {
 
 .win-bar {
     position: absolute;
-    top: -5px;
-    border-bottom-left-radius: 20px;
+    top: 0;
+    left: -1px;
     background-color: green;
-    height: 20px;
+    height: 40px;
     width: 50%;
 }
 
 .loss-bar {
     position: absolute;
-    top: -5px;
-    right: 0;
-    border-bottom-right-radius: 20px;
+    top: 0;
+    right: -1px;
     background-color: red;
-    height: 20px;
+    height: 40px;
     width: 50%;
 }
