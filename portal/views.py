@@ -20,7 +20,6 @@ def portal_welcome(request):
         else:
             wp = float(s.won)*100/float(s.won+s.loss)
         selfies.append({"s": s, "w": wp})
-        print wp
 
     context["selfies"] = selfies
     return render(request, 'portal/index.html', context)

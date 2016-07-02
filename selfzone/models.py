@@ -63,7 +63,13 @@ class Selfie(models.Model):
 
     def analyze(self):
         services = ('age_and_gender_estimation', 'face_expression_estimation', 'gaze_analysis')
-        conn = angus.connect()
+        url = "https://gate.angus.ai"
+        c_id = "1269cac4-3537-11e6-819d-0242ac110002"
+        a_tk = "b407f040-fca7-4dfa-80de-f7399deed597"
+        conf = angus.get_default_configuration()
+        conf.set_credential(client_id=c_id, access_token=a_tk)
+
+        conn = angus.connect(url=url, conf=conf)
         s = conn.services.get_services(services)
         job = s.process({'image': open(self.photo.path)})
         res = job.result
