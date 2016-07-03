@@ -21,7 +21,7 @@
 
       <div class="row-same-height" style="max-height: 50%; min-height: 100px">
         <div class="col-md-6 col-md-height" style="vertical-align: bottom">
-            <div class="row">
+            <div style="margin: 0 auto; width: 70%">
                 <a href="{% url 'selfzone:vote' s1.id s2.id "left" %}">
                 <img class="new-img" src="{{ s1.photo.url }}"></a>
             </div>
@@ -36,11 +36,10 @@
         </div>
 
         <div class="col-md-6 col-md-height" style="vertical-align: bottom">
-            <div class="row">
+            <div style="margin: 0 auto; width: 70%">
                 <a href="{% url 'selfzone:vote' s1.id s2.id "right" %}">
                 <img class="new-img" src="{{ s2.photo.url }}"></a>
             </div>
-
             <div class="row">
                 <h2>{{ s2.info }}</h2>
             </div>
