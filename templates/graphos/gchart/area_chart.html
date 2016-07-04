@@ -4,13 +4,28 @@
     var options = {
         backgroundColor: '#333',
         hAxis:{
-            gridlines: { color: '#333', count: 0}
+            gridlines: { color: '#333', count: 0},
+                textStyle: {
+                color: '#c7c7c7'
+            }
         },
         vAxis:{
-            gridlines: { color: '#333', count: 0}
-        }
+            gridlines: { color: '#333', count: 0},
+        },
+        series: {
+            0: { color: '#00ff00' },
+            1: { color: '#ff0000' },
+        },
+
+        legend: { position: "top", textStyle: {color: '#c7c7c7'}},
+        curveType: 'function',
+
+        chartArea: { left: '8%', top: '8%', width: '80%', height: '75%' }
     };
 
-    var chart = new google.visualization.AreaChart(document.getElementById('{{ chart.get_html_id }}'));
+
+
+
+    var chart = new google.visualization.LineChart(document.getElementById('{{ chart.get_html_id }}'));
 
 {% endblock %}

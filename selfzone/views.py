@@ -63,13 +63,16 @@ def select_selfies():
     # selects from filtred selfie (random weighted by delta score and number of taken match)
     weights = []
     for s in f.all():
-        matches = s.loser_set.filter(winner=s1).count() + s.winner_set.filter(loser=s1).count() + 1
-        delta_score = float(abs(s.score-s1.score)) + 1
+        matches = s.loser_set.filter(winner=s1).count() + s.winner_set.filter(loser=s1).count() + 1.0
+        delta_score = float(abs(s.score-s1.score))
         weights.append(delta_score*matches)
-    weights = [max(weights)-i for i in weights]
-    weights = [i/sum(weights) for i in weights]
 
-    s2 = choice(f.all(), 1, p=weights)[0]
+    if sum(weights) != 0:
+        weights = [max(weights)-i for i in weights]
+        weights = [i/sum(weights) for i in weights]
+        s2 = choice(f.all(), 1, p=weights)[0]
+    else:
+        s2 = f.all()[randint(0, len(f.all())-1)]
     print "chosen: ", s2, "delta score: ", abs(s1.score-s2.score),
     print "matches: ", s2.loser_set.filter(winner=s1).count() + s2.winner_set.filter(loser=s1).count()
     print "s1 expected:", Selfie.expected(s2.score, s1.score), "s2 expected:", Selfie.expected(s1.score, s2.score)
@@ -128,14 +131,24 @@ def details(request, selfie_id):
         lasts.append({"selfie": s, "color": color})
 
     #matches per day
-    g1 = group_by_day(selfie.winner_set, 14)
-    g2 = group_by_day(selfie.loser_set, 14)
+    g1 = group_by_day(selfie.winner_set, 15)
+    g2 = group_by_day(selfie.loser_set, 15)
 
     data = [("day", "win", "loss")]
     for i in range(len(g1)):
         data.append((g1[i][0], g1[i][1], g2[i][1]))
     chart = AreaChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
-    return render(request, 'selfzone/details.html', {'selfie': selfie, 'lasts': lasts, 'chart': chart})
+
+    lost_with = selfie.loser_set.order_by("winner")
+    grouped = itertools.groupby(lost_with, lambda r: r.winner)
+    nightmare = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
+
+    win_with = selfie.winner_set.order_by("loser")
+    grouped = itertools.groupby(win_with, lambda r: r.loser)
+    easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
+
+    context = {'selfie': selfie, 'lasts': lasts, 'chart': chart, 'nightmare': nightmare, 'easy': easy}
+    return render(request, 'selfzone/details.html', context)
 
 
 def group_by_day(set, days):
@@ -145,9 +158,6 @@ def group_by_day(set, days):
     matches_by_day = [(day, len(list(m_this_day))) for day, m_this_day in grouped]
     all_days = [t.strftime("%Y-%m-%d") for t in [timezone.now().date() - timezone.timedelta(i) for i in range(days+1)]]
     mat_days = [d for d, c in matches_by_day]
-    print matches_by_day
-    print all_days
-    print mat_days
 
     for d in all_days:
         if d not in mat_days:

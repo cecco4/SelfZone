@@ -11,7 +11,22 @@
 {% block body %}
     <div class="row" style="padding-top: 25px">
         <div class="col-sm-4"><img class="new-img" style="width: 80%;" src="{{ selfie.photo.url }}"></div>
-        <div class="col-sm-8"><div style="width: 100%;">{{ chart.as_html }}</div></div>
+    </div>
+    <div class="row" style="margin-top: 25px">
+        <div class="col-sm-8">
+            <h3>match trend:</h3>
+            <div style="width: 100%;">{{ chart.as_html }}</div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h3>easy:</h3>
+            <a href="{% url 'selfzone:details' easy.id %}">
+            <img class="new-img" style="width: 80%;" src="{{ easy.photo.url }}"></a>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+            <h3>nightmare:</h3>
+            <a href="{% url 'selfzone:details' nightmare.id %}">
+            <img class="new-img" style="width: 80%;" src="{{ nightmare.photo.url }}"></a>
+        </div>
     </div>
     <div class="row">
         <div class="col-sm-12 text-center">
