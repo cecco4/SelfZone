@@ -147,7 +147,7 @@ class Selfie(models.Model):
         for s in Selfie.objects.all():
             s.won = 0
             s.loss = 0
-            s.score = 1500
+            s.score = 1500.0
             s.save()
 
         print "calculate matches"
@@ -158,9 +158,11 @@ class Selfie(models.Model):
     def win_against(self, loser):
         self.won += 1
         loser.loss += 1
-        self.score = Selfie.win_score(self.score, Selfie.expected(loser.score, self.score))
-        loser.score = Selfie.loss_score(loser.score, Selfie.expected(self.score, loser.score))
+        w_score = Selfie.win_score(self.score, Selfie.expected(loser.score, self.score))
+        l_score = Selfie.loss_score(loser.score, Selfie.expected(self.score, loser.score))
         print "winner new:", self.score, "loser new:", loser.score
+        self.score = w_score
+        loser.score = l_score
         self.save()
         loser.save()
 

@@ -1,0 +1,16 @@
+{% extends "graphos/gchart/base.html" %}
+
+{% block create_chart %}
+    var options = {
+        backgroundColor: '#333',
+        hAxis:{
+            gridlines: { color: '#333', count: 0}
+        },
+        vAxis:{
+            gridlines: { color: '#333', count: 0}
+        }
+    };
+
+    var chart = new google.visualization.AreaChart(document.getElementById('{{ chart.get_html_id }}'));
+
+{% endblock %}

@@ -3,10 +3,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views.decorators.cache import cache_control
 from django.contrib.auth.decorators import login_required
+from graphos.renderers import gchart
+from graphos.renderers.highcharts import LineChart
+from graphos.sources.simple import SimpleDataSource
+
 from models import SelfieForm, Selfie, Match
 from django.contrib.auth.models import User
 from random import randint
 from numpy.random import choice
+from django.utils import timezone
+import itertools
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -107,9 +113,9 @@ def vote(request, s1_id, s2_id, voted):
 
 def details(request, selfie_id):
     selfie = get_object_or_404(Selfie, pk=selfie_id)
-    l5 = (selfie.loser_set.all() | selfie.winner_set.all()).order_by("match_date")[:10]
+    matches = (selfie.loser_set.all() | selfie.winner_set.all())
     lasts = []
-    for m in l5:
+    for m in matches.order_by("match_date")[:10]:
         s = None
         color = None
         if m.winner.id == selfie.id:
@@ -120,4 +126,32 @@ def details(request, selfie_id):
             color = "red"
         lasts.append({"selfie": s, "color": color})
 
-    return render(request, 'selfzone/details.html', {'selfie': selfie, 'lasts': lasts})
+    #matches per day
+    g1 = group_by_day(selfie.winner_set, 14)
+    g2 = group_by_day(selfie.loser_set, 14)
+
+    data = [("day", "win", "loss")]
+    for i in range(len(g1)):
+        data.append((g1[i][0], g1[i][1], g2[i][1]))
+    chart = AreaChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
+    return render(request, 'selfzone/details.html', {'selfie': selfie, 'lasts': lasts, 'chart': chart})
+
+
+def group_by_day(set, days):
+    last_days = timezone.now() - timezone.timedelta(days)
+    m = set.filter(match_date__gte=last_days)
+    grouped = itertools.groupby(m, lambda record: record.match_date.strftime("%Y-%m-%d"))
+    matches_by_day = [(day, len(list(m_this_day))) for day, m_this_day in grouped]
+
+    all_days = [t.strftime("%Y-%m-%d") for t in [timezone.now() - timezone.timedelta(i) for i in range(days)]]
+    mat_days = [d for d, c in matches_by_day]
+    for d in all_days:
+        if d not in mat_days:
+            matches_by_day.append((d, 0))
+    return sorted(matches_by_day, lambda x, y: cmp(x[0], y[0]))
+
+from graphos.renderers import gchart
+
+class AreaChart(gchart.LineChart):
+    def get_template(self):
+        return "graphos/gchart/area_chart.html"
