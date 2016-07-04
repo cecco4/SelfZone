@@ -151,8 +151,11 @@ class Selfie(models.Model):
             s.save()
 
         print "calculate matches"
+        tot = str(Match.objects.count())
+        n = 0
         for m in Match.objects.order_by("match_date"):
-            print m.match_date,
+            n +=1
+            print str(n)+"/"+tot, m.match_date,
             m.winner.win_against(m.loser)
 
     def win_against(self, loser):
