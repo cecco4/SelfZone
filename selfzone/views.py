@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from graphos.renderers import gchart
 from graphos.renderers.highcharts import LineChart
 from graphos.sources.simple import SimpleDataSource
+from graphos.renderers import gchart
 
 from models import SelfieForm, Selfie, Match
 from django.contrib.auth.models import User
@@ -138,19 +139,21 @@ def details(request, selfie_id):
 
 
 def group_by_day(set, days):
-    last_days = timezone.now() - timezone.timedelta(days)
-    m = set.filter(match_date__gte=last_days)
+    last_days = timezone.now().date() - timezone.timedelta(days)
+    m = set.filter(match_date__gte=last_days).order_by("match_date")
     grouped = itertools.groupby(m, lambda record: record.match_date.strftime("%Y-%m-%d"))
     matches_by_day = [(day, len(list(m_this_day))) for day, m_this_day in grouped]
-
-    all_days = [t.strftime("%Y-%m-%d") for t in [timezone.now() - timezone.timedelta(i) for i in range(days)]]
+    all_days = [t.strftime("%Y-%m-%d") for t in [timezone.now().date() - timezone.timedelta(i) for i in range(days+1)]]
     mat_days = [d for d, c in matches_by_day]
+    print matches_by_day
+    print all_days
+    print mat_days
+
     for d in all_days:
         if d not in mat_days:
             matches_by_day.append((d, 0))
     return sorted(matches_by_day, lambda x, y: cmp(x[0], y[0]))
 
-from graphos.renderers import gchart
 
 class AreaChart(gchart.LineChart):
     def get_template(self):
