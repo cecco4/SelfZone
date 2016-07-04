@@ -7,3 +7,4 @@ portal/migrations
 selfzone/migrations
 
 *.pyc
+env/
