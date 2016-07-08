@@ -19,13 +19,17 @@
         </div>
         <div class="col-sm-3 col-xs-6">
             <h3>easy:</h3>
+            {% if easy != None %}
             <a href="{% url 'selfzone:details' easy.id %}">
             <img class="new-img" style="width: 80%;" src="{{ easy.photo.url }}"></a>
+            {% endif %}
         </div>
         <div class="col-sm-3 col-xs-6">
             <h3>nightmare:</h3>
+            {% if nightmare != None %}
             <a href="{% url 'selfzone:details' nightmare.id %}">
             <img class="new-img" style="width: 80%;" src="{{ nightmare.photo.url }}"></a>
+            {% endif %}
         </div>
     </div>
     <div class="row">

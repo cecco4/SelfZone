@@ -139,13 +139,16 @@ def details(request, selfie_id):
         data.append((g1[i][0], g1[i][1], g2[i][1]))
     chart = AreaChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
 
+    nightmare = easy = None
     lost_with = selfie.loser_set.order_by("winner")
-    grouped = itertools.groupby(lost_with, lambda r: r.winner)
-    nightmare = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
+    if lost_with.count() > 0:
+        grouped = itertools.groupby(lost_with, lambda r: r.winner)
+        nightmare = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
 
     win_with = selfie.winner_set.order_by("loser")
-    grouped = itertools.groupby(win_with, lambda r: r.loser)
-    easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
+    if win_with.count() > 0:
+        grouped = itertools.groupby(win_with, lambda r: r.loser)
+        easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
 
     context = {'selfie': selfie, 'lasts': lasts, 'chart': chart, 'nightmare': nightmare, 'easy': easy}
     return render(request, 'selfzone/details.html', context)
