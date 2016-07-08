@@ -41,28 +41,35 @@ def select_selfies():
     # select selfies with same (or less) number of faces
     tries = 0
     f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces)
-    while f.count() <= 1:
+    while f.count() <= 5:
         tries += 1
         f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces-tries)
 
     # start filtring by tags (random weighted by priority)
-    limit = f.count()*5/100 + 5
+    limit = f.count()*5/100 + 5 # minimum: 5%
     print "Start search from ", f.count(), limit
 
     tag_weights = [float(i.priority)+1 for i in s1.tags.all()]
     tag_weights = [i/sum(tag_weights) for i in tag_weights]
-    for t in choice(s1.tags.all(), s1.tags.count(), replace=False, p=tag_weights):
-        old = f
-        f = f.filter(tags__tag=t.tag)
-        print "("+t.tag+")down to ", f.count(),
-        if f.count() < limit:   # keep only if have at least limit elements
-            f = old
-            continue
+    max_tags = 3
 
-    print "selected selfies: ", f.count()
+    old = f
+    while True:
+        for t in choice(s1.tags.all(), max_tags, replace=False, p=tag_weights):
+            print "filter", t.tag
+            f = f.filter(tags__tag=t.tag)
+        if f.count() > 5:
+            break
+        else:
+            f = old
+            print f.count(), "discard"
+
     # selects from filtred selfie (random weighted by delta score and number of taken match)
+    # filtred selfies are randomic limited
     weights = []
-    for s in f.all():
+    selected = choice(f.all(), min(limit, f.count()), replace=False)
+    print "selected selfies: ", len(selected)
+    for s in selected:
         matches = s.loser_set.filter(winner=s1).count() + s.winner_set.filter(loser=s1).count() + 1.0
         delta_score = float(abs(s.score-s1.score))
         weights.append(delta_score*matches)
@@ -70,9 +77,9 @@ def select_selfies():
     if sum(weights) != 0:
         weights = [max(weights)-i for i in weights]
         weights = [i/sum(weights) for i in weights]
-        s2 = choice(f.all(), 1, p=weights)[0]
+        s2 = choice(selected, 1, p=weights)[0]
     else:
-        s2 = f.all()[randint(0, len(f.all())-1)]
+        s2 = selected[randint(0, len(selected)-1)]
     print "chosen: ", s2, "delta score: ", abs(s1.score-s2.score),
     print "matches: ", s2.loser_set.filter(winner=s1).count() + s2.winner_set.filter(loser=s1).count()
     print "s1 expected:", Selfie.expected(s2.score, s1.score), "s2 expected:", Selfie.expected(s1.score, s2.score)
