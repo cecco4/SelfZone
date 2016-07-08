@@ -11,6 +11,18 @@
 {% block body %}
     <div class="row" style="padding-top: 25px">
         <div class="col-sm-4"><img class="new-img" style="width: 80%;" src="{{ selfie.photo.url }}"></div>
+        <div class="col-sm-8" style="text-align: left">
+            score: {{ selfie.score }} <br>
+            won: {{ selfie.won }} <br>
+            lost: {{ selfie.loss }} <br>
+
+            position:  {{ pos }}<br>
+
+            tags:
+            {% for t in selfie.tags.all %}
+                {{ t.tag }}{% if forloop.counter != selfie.tags.count %},{% endif %}
+            {% endfor %}
+        </div>
     </div>
     <div class="row" style="margin-top: 25px">
         <div class="col-sm-8">
@@ -30,14 +42,6 @@
             <a href="{% url 'selfzone:details' nightmare.id %}">
             <img class="new-img" style="width: 80%;" src="{{ nightmare.photo.url }}"></a>
             {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 text-center">
-        tags:
-            {% for t in selfie.tags.all %}
-                {{ t.tag }}{% if forloop.counter != selfie.tags.count %},{% endif %}
-            {% endfor %}
         </div>
     </div>
 

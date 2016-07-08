@@ -38,7 +38,7 @@ def select_selfies():
     # first selfie is random
     s1 = withtags.all()[randint(0, withtags.count()-1)]
 
-    # select selfies with same (or less) number of faces
+    # select selfies with same (or less) number of faces (minimun 5 selfies)
     tries = 0
     f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces)
     while f.count() <= 5:
@@ -46,7 +46,7 @@ def select_selfies():
         f = Selfie.objects.exclude(id=s1.id).filter(faces=s1.faces-tries)
 
     # start filtring by tags (random weighted by priority)
-    limit = f.count()*5/100 + 5 # minimum: 5%
+    limit = int(f.count()*5/100 + 5) # minimum: 5%
     print "Start search from ", f.count(), limit
 
     tag_weights = [float(i.priority)+1 for i in s1.tags.all()]
@@ -54,16 +54,20 @@ def select_selfies():
     max_tags = 3
 
     old = f
+    minimum = limit / 4
     while True:
         for t in choice(s1.tags.all(), max_tags, replace=False, p=tag_weights):
             print "filter", t.tag
             f = f.filter(tags__tag=t.tag)
-        if f.count() > 5:
+        if f.count() >= minimum:
             break
         else:
-            f = old
             print f.count(), "discard"
+            f = old
+            minimum /= 2
 
+    if f.count() == 1:
+        return s1, f.all()[0]
     # selects from filtred selfie (random weighted by delta score and number of taken match)
     # filtred selfies are randomic limited
     weights = []
@@ -124,6 +128,8 @@ def vote(request, s1_id, s2_id, voted):
 
 def details(request, selfie_id):
     selfie = get_object_or_404(Selfie, pk=selfie_id)
+    pos = Selfie.objects.filter(score__gt=selfie.score).count() +1
+
     matches = (selfie.loser_set.all() | selfie.winner_set.all())
     lasts = []
     for m in matches.order_by("match_date")[:10]:
@@ -157,7 +163,7 @@ def details(request, selfie_id):
         grouped = itertools.groupby(win_with, lambda r: r.loser)
         easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
 
-    context = {'selfie': selfie, 'lasts': lasts, 'chart': chart, 'nightmare': nightmare, 'easy': easy}
+    context = {'selfie': selfie, 'pos': pos, 'lasts': lasts, 'chart': chart, 'nightmare': nightmare, 'easy': easy}
     return render(request, 'selfzone/details.html', context)
 
 
@@ -178,3 +184,17 @@ def group_by_day(set, days):
 class AreaChart(gchart.LineChart):
     def get_template(self):
         return "graphos/gchart/area_chart.html"
+
+
+def top(request, num):
+    if num is None:
+        num = 10
+    list = Selfie.objects.order_by("-score").all()[:int(num)]
+    return render(request, 'selfzone/top.html', {"list": list})
+
+
+def bottom(request, num):
+    if num is None:
+        num = 10
+    list = Selfie.objects.order_by("score").all()[:int(num)]
+    return render(request, 'selfzone/top.html', {"list": list})
