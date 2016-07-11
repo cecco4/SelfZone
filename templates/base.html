@@ -17,12 +17,15 @@
         {% block header %}
             <div style="min-width: 400px;">
               <div class="row-same-height">
-
-                <div class="col-sm-4 col-sm-height"></div>
-                <div class="col-sm-4 col-sm-height" style="padding-bottom: 20px">
+                <div class="col-sm-4 col-sm-height col-sm-push-4" style="padding-bottom: 20px">
                     <h1 class="self-title">Selfzone</h1>
                 </div>
-                <div class="col-sm-4 col-sm-height">
+                <div class="col-sm-4 col-sm-height col-sm-pull-4 col-xs-6">
+                    <a href="{% url 'selfzone:top' "" %}">
+                        <button type="button" class="self-btn">Top 10</button>
+                    </a>
+                </div>
+                <div class="col-sm-4 col-sm-height col-xs-6">
                     {% if request.path|slice:":6" != "/login" and request.path|slice:":7" != "/portal" %}
                         {% if not user.is_authenticated %}
                             <a href="{% url 'portal:portal_welcome' %}">

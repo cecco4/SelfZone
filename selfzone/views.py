@@ -187,14 +187,14 @@ class AreaChart(gchart.LineChart):
 
 
 def top(request, num):
-    if num is None:
+    if num == "":
         num = 10
     list = Selfie.objects.order_by("-score").all()[:int(num)]
     return render(request, 'selfzone/top.html', {"list": list})
 
 
 def bottom(request, num):
-    if num is None:
+    if num == "":
         num = 10
     list = Selfie.objects.order_by("score").all()[:int(num)]
     return render(request, 'selfzone/top.html', {"list": list})
