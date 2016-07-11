@@ -16,7 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_URL = '/media/'
-LOGIN_URL = '/login/'
+LOGIN_URL = '/selfzone/panel/login/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'mathfilters',
     'graphos',
     'selfzone',
-    'portal'
+    'selfzone.panel'
 ]
 
 MIDDLEWARE_CLASSES = [

@@ -1,7 +1,7 @@
-{% extends "portal/portal.html" %}
+{% extends "selfzone/panel/portal.html" %}
 {% load mathfilters %}
 
-{% comment %}   Welcome page of the portal. {% endcomment %}
+{% comment %}   Welcome page of the panel. {% endcomment %}
 {% block title %}   Portal {% endblock %}
 {% block content %}
 
@@ -15,7 +15,7 @@
         <button type="button" class="self-btn" style="margin: 20px">upload</button>
     </a>
 
-    <a href="{% url 'logout_view' %}">
+    <a href="{% url 'selfzone.panel:logout_view' %}">
         <button type="button" class="self-btn" style="margin: 20px">logout</button>
     </a>
 

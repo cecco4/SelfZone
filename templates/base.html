@@ -26,13 +26,13 @@
                     </a>
                 </div>
                 <div class="col-sm-4 col-sm-height col-xs-6">
-                    {% if request.path|slice:":6" != "/login" and request.path|slice:":7" != "/portal" %}
+                    {% if request.path|slice:":6" != "/login" and request.path|slice:":7" != "/panel" %}
                         {% if not user.is_authenticated %}
-                            <a href="{% url 'portal:portal_welcome' %}">
+                            <a href="{% url 'selfzone.panel:index' %}">
                                 <button type="button" class="self-btn">Sign in</button>
                             </a>
                         {% else %}
-                            <a href="{% url 'portal:portal_welcome' %}">
+                            <a href="{% url 'selfzone.panel:index' %}">
                                 <button type="button" class="self-btn">profile</button>
                             </a>
                         {% endif %}

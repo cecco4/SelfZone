@@ -23,9 +23,5 @@ from . import views
 urlpatterns = [
     url(r'^selfzone/', include('selfzone.urls', namespace="selfzone")),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^portal/', include('portal.urls', namespace="portal")),
-
-    url(r'^$', include('selfzone.urls', namespace="selfzone")),
-    url(r'^logout/$', views.logout_view, name='logout_view'),
-    url(r'^', include('django.contrib.auth.urls'))
+    url(r'^selfzone/panel/', include('selfzone.panel.urls', namespace="selfzone.panel")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
