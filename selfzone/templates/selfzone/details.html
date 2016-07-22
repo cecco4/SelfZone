@@ -22,6 +22,9 @@
             {% for t in selfie.tags.all %}
                 {{ t.tag }}{% if forloop.counter != selfie.tags.count %},{% endif %}
             {% endfor %}
+            <br>
+
+            user: {{ selfie.user }}
         </div>
     </div>
     <div class="row" style="margin-top: 25px">
