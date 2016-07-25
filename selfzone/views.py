@@ -178,19 +178,18 @@ class AreaChart(gchart.LineChart):
 
 def stats(request):
     context = {}
-    day = History.objects.filter(date=timezone.now().date()).order_by("-score").all()
 
     context['allTimeBest']  = Selfie.objects.all().order_by("-score").all()[:3]
     context['allTimeWorst'] = Selfie.objects.all().order_by("score").all()[:3]
 
-    context['todayBest']  = [h.selfie for h in History.objects.filter(date=timezone.now().date()).order_by("-score").all()[:3]]
-    context['todayWorst'] = [h.selfie for h in History.objects.filter(date=timezone.now().date()).order_by("score").all()[:3]]
+    day = History.objects.filter(date=timezone.now().date())
+    context['todayBest']  = [h.selfie for h in day.order_by("-score").all()[:3]]
+    context['todayWorst'] = [h.selfie for h in day.order_by("score").all()[:3]]
 
     week = History.objects.filter(date__gte=timezone.now().date() - timezone.timedelta(timezone.now().weekday()))
-    weekSum = week.values("selfie").annotate(totscore=Sum("score"))
-
-    context['weekBest']  = [ Selfie.objects.get(pk=h["selfie"]) for h in weekSum.order_by("-totscore").all()[:3]]
-    context['weekWorst'] = [ Selfie.objects.get(pk=h["selfie"]) for h in weekSum.order_by("totscore").all()[:3]]
+    weeksum = week.values("selfie").annotate(totscore=Sum("score"))
+    context['weekBest']  = [Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("-totscore").all()[:3]]
+    context['weekWorst'] = [Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("totscore").all()[:3]]
 
     return render(request, 'selfzone/stats.html', context)
 
