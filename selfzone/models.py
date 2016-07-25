@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django import forms
 import angus
+import sys
 
 
 # Create your models here.
@@ -143,49 +144,70 @@ class Selfie(models.Model):
 
     @staticmethod
     def recalculate_all():
-        print "reinit data to zero"
-        for s in Selfie.objects.all():
+        print "delete history"
+        tot = History.objects.count()
+        for i in xrange(0, tot):
+            History.objects.all()[0].delete()
+            progress = (float(i)/tot)*100
+            sys.stdout.write("\r%d%%" % progress)
+            sys.stdout.flush()
+
+        print "\nreinit selfie data"
+        for i in xrange(0, Selfie.objects.count()):
+            s = Selfie.objects.all()[i]
             s.won = 0
             s.loss = 0
             s.score = 1500.0
             s.save()
+            progress = (float(i)/Selfie.objects.count())*100
+            sys.stdout.write("\r%d%%" % progress)
+            sys.stdout.flush()
 
-        print "calculate matches"
-        tot = str(Match.objects.count())
+        print "\ncalculate matches"
+        tot = Match.objects.count()
         n = 0
         for m in Match.objects.order_by("match_date"):
-            n +=1
-            print str(n)+"/"+tot, m.match_date,
-            m.winner.win_against(m.loser)
+            m.winner.win_against(m.loser, m.match_date)
+            n+=1
 
-    def win_against(self, loser):
+            progress = (float(n) / tot) * 100
+            sys.stdout.write("\r%d%%" % progress)
+            sys.stdout.flush()
+
+    def win_against(self, loser, date):
         self.won += 1
         loser.loss += 1
-        w_score = Selfie.win_score(self.score, Selfie.expected(loser.score, self.score))
-        l_score = Selfie.loss_score(loser.score, Selfie.expected(self.score, loser.score))
-        print "winner new:", self.score, "loser new:", loser.score
+
+        w_score = self.score + 1.0/(self.won+self.loss)
+        l_score = loser.score + 1.0/(loser.won+loser.loss)
         self.score = w_score
         loser.score = l_score
+
         self.save()
         loser.save()
 
-    @staticmethod
-    def expected(score_b, score_a):
-        return 1 / (1 + pow(10, (score_b - score_a) / 400))
+        hist = History.objects.get_or_create(selfie=self, date=date.date())[0]
+        hist.matches += 1
+        hist.score += 1.0 / hist.matches
+        hist.save()
 
-    @staticmethod
-    def win_score(score, expected):
-        return score + 24 * (1 - expected)
-
-    @staticmethod
-    def loss_score(score, expected):
-        return score + 24 * (0 - expected)
+        hist = History.objects.get_or_create(selfie=loser, date=date.date())[0]
+        hist.matches += 1
+        hist.score -= 1.0 / hist.matches
+        hist.save()
 
 
 class Match(models.Model):
     winner = models.ForeignKey(Selfie, related_name="winner_set")
     loser = models.ForeignKey(Selfie, related_name="loser_set")
     match_date = models.DateTimeField(default=timezone.now)
+
+
+class History(models.Model):
+    selfie = models.ForeignKey(Selfie, related_name="selfie_set")
+    score = models.FloatField(default=1500.0)
+    matches = models.IntegerField(default=0)
+    date = models.DateField(default=timezone.now)
 
 
 class SelfieForm(forms.ModelForm):

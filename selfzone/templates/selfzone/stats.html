@@ -17,14 +17,14 @@
             <h3>Best</h3>
             <div style="margin: 0 auto; width: 70%">
                 <a href="{% url 'selfzone:details' bestD.id %}">
-                <img class="new-img" src="{{ bestW.photo.url }}"></a>
+                <img class="new-img" src="{{ bestD.photo.url }}"></a>
             </div>
        </div>
        <div class="col-md-6 col-md-height" style="vertical-align: bottom">
             <h3>Worst</h3>
             <div style="margin: 0 auto; width: 70%">
                 <a href="{% url 'selfzone:details' worstD.id %}">
-                <img class="new-img" src="{{ worstW.photo.url }}"></a>
+                <img class="new-img" src="{{ worstD.photo.url }}"></a>
             </div>
        </div>
     </div>

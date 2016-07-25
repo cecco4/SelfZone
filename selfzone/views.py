@@ -8,7 +8,7 @@ from graphos.renderers.highcharts import LineChart
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
 
-from models import SelfieForm, Selfie, Match
+from models import SelfieForm, Selfie, Match, History
 from django.contrib.auth.models import User
 from random import randint
 from numpy.random import choice
@@ -87,7 +87,6 @@ def select_selfies():
         s2 = selected[randint(0, len(selected)-1)]
     print "chosen: ", s2, "delta score: ", abs(s1.score-s2.score),
     print "matches: ", s2.loser_set.filter(winner=s1).count() + s2.winner_set.filter(loser=s1).count()
-    print "s1 expected:", Selfie.expected(s2.score, s1.score), "s2 expected:", Selfie.expected(s1.score, s2.score)
     return s1, s2
 
 
@@ -119,8 +118,8 @@ def vote(request, s1_id, s2_id, voted):
         winner = s2
         loser = s1
 
-    Match.objects.create(winner=winner, loser=loser)
-    winner.win_against(loser)
+    m = Match.objects.create(winner=winner, loser=loser)
+    winner.win_against(loser, m.match_date)
 
     # return HttpResponse("Won " + str(sW.id) + ": " + str(sW.won) + "/" + str(sW.loss) + "\n" +
     #                    "Lost " + str(sL.id) + ": " + str(sL.won) + "/" + str(sL.loss) + "\n")
@@ -144,7 +143,7 @@ def details(request, selfie_id):
             color = "red"
         lasts.append({"selfie": s, "color": color})
 
-    #matches per day
+    #matches per day TODO use new history model to show trend
     g1 = group_by_day(selfie.winner_set, 15)
     g2 = group_by_day(selfie.loser_set, 15)
 
@@ -189,15 +188,15 @@ class AreaChart(gchart.LineChart):
 
 def stats(request):
     context = {}
-    day = Match.objects.all().filter(match_date__gt=timezone.now().date())
-    day = day.values('winner').annotate(count=Count('winner')).order_by("-count")
+    day = History.objects.filter(date=timezone.now().date()).order_by("-score").all()
 
     start_week = timezone.now().date() - timezone.timedelta(timezone.now().weekday())
     week = Match.objects.all().filter(match_date__gt=start_week)
     week = week.values('winner').annotate(count=Count('winner')).order_by("-count")
 
-    context['bestD']  = get_object_or_404(Selfie, pk=day[0]["winner"])
-    context['worstD'] = get_object_or_404(Selfie, pk=day[day.count()-1]["winner"])
+    context['bestD']  = day[0].selfie
+    context['worstD'] = day[day.count()-1].selfie
+
     context['bestW']  = get_object_or_404(Selfie, pk=week[0]["winner"])
     context['worstW'] = get_object_or_404(Selfie, pk=week[week.count()-1]["winner"])
     return render(request, 'selfzone/stats.html', context)
