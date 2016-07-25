@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+    <a href="{% url 'selfzone:top' "10" %}">
+        <button type="button" class="self-btn" style="margin: 20px">Top 10</button>
+    </a>
+
+    <a href="{% url 'selfzone:bottom' "10" %}">
+        <button type="button" class="self-btn" style="margin: 20px">Bottom 10</button>
+    </a>
+
+    <br>
+    <h2>Today</h2>
+    <div class="row-same-height" style="max-height: 50%; min-height: 100px;">
+        <div class="col-md-6 col-md-height" style="vertical-align: bottom">
+            <h3>Best</h3>
+            <div style="margin: 0 auto; width: 70%">
+                <a href="{% url 'selfzone:details' bestD.id %}">
+                <img class="new-img" src="{{ bestW.photo.url }}"></a>
+            </div>
+       </div>
+       <div class="col-md-6 col-md-height" style="vertical-align: bottom">
+            <h3>Worst</h3>
+            <div style="margin: 0 auto; width: 70%">
+                <a href="{% url 'selfzone:details' worstD.id %}">
+                <img class="new-img" src="{{ worstW.photo.url }}"></a>
+            </div>
+       </div>
+    </div>
+
+    <br>
+    <h2>These week</h2>
+    <div class="row-same-height" style="max-height: 50%; min-height: 100px">
+        <div class="col-md-6 col-md-height" style="vertical-align: bottom">
+            <h3>Best</h3>
+            <div style="margin: 0 auto; width: 70%">
+                <a href="{% url 'selfzone:details' bestW.id %}">
+                <img class="new-img" src="{{ bestW.photo.url }}"></a>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-md-height" style="vertical-align: bottom">
+            <h3>Worst</h3>
+            <div style="margin: 0 auto; width: 70%">
+                <a href="{% url 'selfzone:details' worstW.id %}">
+                <img class="new-img" src="{{ worstW.photo.url }}"></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

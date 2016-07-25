@@ -12,6 +12,7 @@ from models import SelfieForm, Selfie, Match
 from django.contrib.auth.models import User
 from random import randint
 from numpy.random import choice
+from django.db.models import Count
 from django.utils import timezone
 import itertools
 
@@ -184,6 +185,22 @@ def group_by_day(set, days):
 class AreaChart(gchart.LineChart):
     def get_template(self):
         return "graphos/gchart/area_chart.html"
+
+
+def stats(request):
+    context = {}
+    day = Match.objects.all().filter(match_date__gt=timezone.now().date())
+    day = day.values('winner').annotate(count=Count('winner')).order_by("-count")
+
+    start_week = timezone.now().date() - timezone.timedelta(timezone.now().weekday())
+    week = Match.objects.all().filter(match_date__gt=start_week)
+    week = week.values('winner').annotate(count=Count('winner')).order_by("-count")
+
+    context['bestD']  = get_object_or_404(Selfie, pk=day[0]["winner"])
+    context['worstD'] = get_object_or_404(Selfie, pk=day[day.count()-1]["winner"])
+    context['bestW']  = get_object_or_404(Selfie, pk=week[0]["winner"])
+    context['worstW'] = get_object_or_404(Selfie, pk=week[week.count()-1]["winner"])
+    return render(request, 'selfzone/stats.html', context)
 
 
 def top(request, num):
