@@ -8,6 +8,7 @@ from graphos.renderers.highcharts import LineChart
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
 
+from django.db.models import Sum
 from models import SelfieForm, Selfie, Match, History
 from django.contrib.auth.models import User
 from random import randint
@@ -75,7 +76,7 @@ def select_selfies():
     selected = choice(f.all(), min(limit, f.count()), replace=False)
     print "selected selfies: ", len(selected)
     for s in selected:
-        matches = s.loser_set.filter(winner=s1).count() + s.winner_set.filter(loser=s1).count() + 1.0
+        matches = s.lost_match_set.filter(winner=s1).count() + s.won_match_set.filter(loser=s1).count() + 1.0
         delta_score = float(abs(s.score-s1.score))
         weights.append(delta_score*matches)
 
@@ -86,7 +87,7 @@ def select_selfies():
     else:
         s2 = selected[randint(0, len(selected)-1)]
     print "chosen: ", s2, "delta score: ", abs(s1.score-s2.score),
-    print "matches: ", s2.loser_set.filter(winner=s1).count() + s2.winner_set.filter(loser=s1).count()
+    print "matches: ", s2.lost_match_set.filter(winner=s1).count() + s2.won_match_set.filter(loser=s1).count()
     return s1, s2
 
 
@@ -130,7 +131,7 @@ def details(request, selfie_id):
     selfie = get_object_or_404(Selfie, pk=selfie_id)
     pos = Selfie.objects.filter(score__gt=selfie.score).count() +1
 
-    matches = (selfie.loser_set.all() | selfie.winner_set.all())
+    matches = (selfie.lost_match_set.all() | selfie.won_match_set.all())
     lasts = []
     for m in matches.order_by("match_date")[:10]:
         s = None
@@ -143,42 +144,31 @@ def details(request, selfie_id):
             color = "red"
         lasts.append({"selfie": s, "color": color})
 
-    #matches per day TODO use new history model to show trend
-    g1 = group_by_day(selfie.winner_set, 15)
-    g2 = group_by_day(selfie.loser_set, 15)
+    # scores per day
+    days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
+    days = days[::-1]
 
-    data = [("day", "win", "loss")]
-    for i in range(len(g1)):
-        data.append((g1[i][0], g1[i][1], g2[i][1]))
+    hist = History.objects.filter(selfie=s)
+    scores = [hist.filter(date=d)[0].score if hist.filter(date=d).exists() else 1500.0 for d in days]
+
+    data = [("day", "score")]
+    for i in range(len(days)):
+        data.append((days[i].strftime("%Y-%m-%d"), scores[i]))
     chart = AreaChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
 
     nightmare = easy = None
-    lost_with = selfie.loser_set.order_by("winner")
+    lost_with = selfie.lost_match_set.order_by("winner")
     if lost_with.count() > 0:
         grouped = itertools.groupby(lost_with, lambda r: r.winner)
         nightmare = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
 
-    win_with = selfie.winner_set.order_by("loser")
+    win_with = selfie.won_match_set.order_by("loser")
     if win_with.count() > 0:
         grouped = itertools.groupby(win_with, lambda r: r.loser)
         easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
 
     context = {'selfie': selfie, 'pos': pos, 'lasts': lasts, 'chart': chart, 'nightmare': nightmare, 'easy': easy}
     return render(request, 'selfzone/details.html', context)
-
-
-def group_by_day(set, days):
-    last_days = timezone.now().date() - timezone.timedelta(days)
-    m = set.filter(match_date__gte=last_days).order_by("match_date")
-    grouped = itertools.groupby(m, lambda record: record.match_date.strftime("%Y-%m-%d"))
-    matches_by_day = [(day, len(list(m_this_day))) for day, m_this_day in grouped]
-    all_days = [t.strftime("%Y-%m-%d") for t in [timezone.now().date() - timezone.timedelta(i) for i in range(days+1)]]
-    mat_days = [d for d, c in matches_by_day]
-
-    for d in all_days:
-        if d not in mat_days:
-            matches_by_day.append((d, 0))
-    return sorted(matches_by_day, lambda x, y: cmp(x[0], y[0]))
 
 
 class AreaChart(gchart.LineChart):
@@ -190,15 +180,18 @@ def stats(request):
     context = {}
     day = History.objects.filter(date=timezone.now().date()).order_by("-score").all()
 
-    start_week = timezone.now().date() - timezone.timedelta(timezone.now().weekday())
-    week = Match.objects.all().filter(match_date__gt=start_week)
-    week = week.values('winner').annotate(count=Count('winner')).order_by("-count")
+    context['allTimeBest']  = Selfie.objects.all().order_by("-score").all()[:3]
+    context['allTimeWorst'] = Selfie.objects.all().order_by("score").all()[:3]
 
-    context['bestD']  = day[0].selfie
-    context['worstD'] = day[day.count()-1].selfie
+    context['todayBest']  = [h.selfie for h in History.objects.filter(date=timezone.now().date()).order_by("-score").all()[:3]]
+    context['todayWorst'] = [h.selfie for h in History.objects.filter(date=timezone.now().date()).order_by("score").all()[:3]]
 
-    context['bestW']  = get_object_or_404(Selfie, pk=week[0]["winner"])
-    context['worstW'] = get_object_or_404(Selfie, pk=week[week.count()-1]["winner"])
+    week = History.objects.filter(date__gte=timezone.now().date() - timezone.timedelta(timezone.now().weekday()))
+    weekSum = week.values("selfie").annotate(totscore=Sum("score"))
+
+    context['weekBest']  = [ Selfie.objects.get(pk=h["selfie"]) for h in weekSum.order_by("-totscore").all()[:3]]
+    context['weekWorst'] = [ Selfie.objects.get(pk=h["selfie"]) for h in weekSum.order_by("totscore").all()[:3]]
+
     return render(request, 'selfzone/stats.html', context)
 
 

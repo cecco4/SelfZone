@@ -198,16 +198,26 @@ class Selfie(models.Model):
 
 
 class Match(models.Model):
-    winner = models.ForeignKey(Selfie, related_name="winner_set")
-    loser = models.ForeignKey(Selfie, related_name="loser_set")
+    winner = models.ForeignKey(Selfie, related_name="won_match_set")
+    loser = models.ForeignKey(Selfie, related_name="lost_match_set")
     match_date = models.DateTimeField(default=timezone.now)
 
 
 class History(models.Model):
-    selfie = models.ForeignKey(Selfie, related_name="selfie_set")
+    selfie = models.ForeignKey(Selfie, related_name="history_set")
     score = models.FloatField(default=1500.0)
     matches = models.IntegerField(default=0)
     date = models.DateField(default=timezone.now)
+
+    def won(self):
+        start = self.date
+        end = start + timezone.timedelta(days=1)
+        return self.selfie.won_match_set.filter(match_date__gte=start, match_date__lte=end).count()
+
+    def lost(self):
+        start = self.date
+        end = start + timezone.timedelta(days=1)
+        return self.selfie.lost_match_set.filter(match_date__gte=start, match_date__lte=end).count()
 
 
 class SelfieForm(forms.ModelForm):
