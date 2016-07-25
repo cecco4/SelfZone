@@ -148,7 +148,7 @@ def details(request, selfie_id):
     days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
     days = days[::-1]
 
-    hist = History.objects.filter(selfie=s)
+    hist = selfie.history_set
     scores = [hist.filter(date=d)[0].score if hist.filter(date=d).exists() else 1500.0 for d in days]
 
     data = [("day", "score")]
