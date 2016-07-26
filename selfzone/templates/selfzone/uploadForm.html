@@ -22,18 +22,18 @@
         </div>
         <p> {{ form.info |add_class:"input-lg" |attr:"placeholder:picture description" |attr:"cols:20" |attr:"rows:3" |attr:"wrap:hard" |set_data:"limit-rows:true"}} </p>
 
-        <input class="hidden" type="text" size="4" id="x1" name="x1" />
-        <input class="hidden" type="text" size="4" id="y1" name="y1" />
-        <input class="hidden" type="text" size="4" id="x2" name="x2" />
-        <input class="hidden" type="text" size="4" id="y2" name="y2" />
-        <input class="hidden" type="text" size="4" id="w" name="w" />
-        <input class="hidden" type="text" size="4" id="h" name="h" />
+        <input type="text" size="4" id="x1" name="x1" />
+        <input type="text" size="4" id="y1" name="y1" />
+        <input type="text" size="4" id="x2" name="x2" />
+        <input type="text" size="4" id="y2" name="y2" />
+        <input type="text" size="4" id="w" name="w" />
+        <input type="text" size="4" id="h" name="h" />
     <input type="submit" value="Submit" class="self-btn"/>
     </form>
 
     <script type='text/javascript'>
         var input = document.getElementById('id_photo');
-        var jcrop_api, h, v;
+        var jcrop_api;
 
         input.onchange = function () {
 
@@ -44,8 +44,8 @@
                     t = $('#target');
 
                     t.attr('src', e.target.result);
-                    w = t[0].naturalWidth;
-                    h = t[0].naturalHeight;
+                    var w = t[0].naturalWidth;
+                    var h = t[0].naturalHeight;
                     l = 0;
                     if(w > h) {
                         l = h;
@@ -61,7 +61,7 @@
                             allowResize: false,
                             onSelect: showCoords,
                             onChange: showCoords,
-                            trueSize: [ h, w ]
+                            trueSize: [ w, h ]
                         }, function(){
                             jcrop_api = this;
                         });
@@ -80,8 +80,8 @@
             jQuery('#y1').val(c.y);
             jQuery('#x2').val(c.x2);
             jQuery('#y2').val(c.y2);
-            jQuery('#w').val(h);
-            jQuery('#h').val(w);
+            jQuery('#w').val(c.w);
+            jQuery('#h').val(c.h);
         };
     </script>
 

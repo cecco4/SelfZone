@@ -105,7 +105,11 @@ def upload(request):
             instance.save()
 
             img = Image.open(instance.photo.file)
-            img.show()
+            x1 = float(request.POST["x1"])
+            x2 = float(request.POST["x2"])
+            y1 = float(request.POST["y1"])
+            y2 = float(request.POST["y2"])
+            img.crop((x1, y1, x2, y2)).resize((640, 640)).save(instance.photo.file.file.name)
 
             print "new salfie: ", instance, "; anlisys result: ", instance.analyze()
             return HttpResponse('Successful update')
