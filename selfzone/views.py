@@ -7,6 +7,7 @@ from graphos.renderers import gchart
 from graphos.renderers.highcharts import LineChart
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
+from django.views.decorators.csrf import csrf_exempt
 
 from django.db.models import Sum
 from models import SelfieForm, Selfie, Match, History
@@ -16,6 +17,7 @@ from numpy.random import choice
 from django.db.models import Count
 from django.utils import timezone
 import itertools
+from PIL import Image
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -92,6 +94,7 @@ def select_selfies():
 
 
 @login_required
+@csrf_exempt
 def upload(request):
     if request.method == 'POST':
         form = SelfieForm(request.POST, request.FILES)
@@ -100,6 +103,10 @@ def upload(request):
             instance.user = request.user
             instance.info = form.cleaned_data["info"]
             instance.save()
+
+            img = Image.open(instance.photo.file)
+            img.show()
+
             print "new salfie: ", instance, "; anlisys result: ", instance.analyze()
             return HttpResponse('Successful update')
         return HttpResponse('Data Not Valid')

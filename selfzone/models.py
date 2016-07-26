@@ -48,7 +48,7 @@ class Tag(models.Model):
 
 
 class Selfie(models.Model):
-    photo = models.FileField(upload_to = 'selfies/%Y/')
+    photo = models.ImageField(upload_to = 'selfies/%Y/')
     user = models.ForeignKey(User)
     info = models.CharField(max_length=200, default="")
     pub_date = models.DateTimeField('date published', default=timezone.now)
@@ -221,7 +221,7 @@ class History(models.Model):
 
 
 class SelfieForm(forms.ModelForm):
-    photo = forms.FileField()
+    photo = forms.ImageField()
     info = forms.CharField(widget=forms.Textarea)
 
     class Meta:
