@@ -22,12 +22,11 @@
         </div>
         <p> {{ form.info |add_class:"input-lg" |attr:"placeholder:picture description" |attr:"cols:20" |attr:"rows:3" |attr:"wrap:hard" |set_data:"limit-rows:true"}} </p>
 
-        <input type="text" size="4" id="x1" name="x1" />
-        <input type="text" size="4" id="y1" name="y1" />
-        <input type="text" size="4" id="x2" name="x2" />
-        <input type="text" size="4" id="y2" name="y2" />
-        <input type="text" size="4" id="w" name="w" />
-        <input type="text" size="4" id="h" name="h" />
+        <input class="hidden" type="text" size="4" id="x1" name="x1" />
+        <input class="hidden" type="text" size="4" id="y1" name="y1" />
+        <input class="hidden" type="text" size="4" id="x2" name="x2" />
+        <input class="hidden" type="text" size="4" id="y2" name="y2" />
+
     <input type="submit" value="Submit" class="self-btn"/>
     </form>
 

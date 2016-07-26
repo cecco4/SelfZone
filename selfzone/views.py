@@ -112,7 +112,7 @@ def upload(request):
             img.crop((x1, y1, x2, y2)).resize((640, 640)).save(instance.photo.file.file.name)
 
             print "new salfie: ", instance, "; anlisys result: ", instance.analyze()
-            return HttpResponse('Successful update')
+            return HttpResponseRedirect(reverse('selfzone.panel:index'))
         return HttpResponse('Data Not Valid')
     else:
         form = SelfieForm()
