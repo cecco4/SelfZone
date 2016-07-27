@@ -7,6 +7,7 @@ from django import forms
 from django.db.transaction import atomic
 import angus
 import sys
+from progressbar import ProgressBar
 
 
 # Create your models here.
@@ -146,15 +147,18 @@ class Selfie(models.Model):
     @staticmethod
     def recalculate_all():
         print "delete history"
+        pbar = ProgressBar().start()
+        tot = History.objects.count()
+        pbar.maxval = tot
         with atomic():
-            tot = History.objects.count()
             for i in xrange(0, tot):
                 History.objects.all()[0].delete()
-                progress = (float(i)/tot)*100
-                sys.stdout.write("\r%d%%" % progress)
-                sys.stdout.flush()
+                pbar.update(i)
+        pbar.update(pbar.maxval)
 
         print "\nreinit selfie data"
+        pbar = ProgressBar().start()
+        pbar.maxval = Selfie.objects.count()
         with atomic():
             for i in xrange(0, Selfie.objects.count()):
                 s = Selfie.objects.all()[i]
@@ -162,21 +166,21 @@ class Selfie(models.Model):
                 s.loss = 0
                 s.score = 1500.0
                 s.save()
-                progress = (float(i)/Selfie.objects.count())*100
-                sys.stdout.write("\r%d%%" % progress)
-                sys.stdout.flush()
+                pbar.update(i)
+        pbar.update(pbar.maxval)
 
         print "\ncalculate matches"
+        pbar = ProgressBar().start()
         tot = Match.objects.count()
+        pbar.maxval = tot
         n = 0
         with atomic():
             for m in Match.objects.order_by("match_date"):
                 m.winner.win_against(m.loser, m.match_date)
-                n+=1
+                n += 1
 
-                progress = (float(n) / tot) * 100
-                sys.stdout.write("\r%d%%" % progress)
-                sys.stdout.flush()
+                pbar.update(n)
+        pbar.update(pbar.maxval)
         print ""
 
     def win_against(self, loser, date):

@@ -24,7 +24,7 @@
                 <img class="stat-img" style="width: calc(30% - {{ forloop.counter0 }}*5%)" src="{{ b.photo.url }}"></a>
             {% endfor %}
 
-            <a href="{% url 'selfzone:top' "" %}">
+            <a href="{% url 'selfzone:top' year month day "" %}">
                 <img  class="stat-img" style="width: 15%" src="{% static 'selfzone/images/nophoto.png' %}">
             </a>
 
@@ -34,7 +34,7 @@
                 <img class="stat-img" style="width: calc(30% - {{ forloop.counter0 }}*5%)" src="{{ b.photo.url }}"></a>
             {% endfor %}
 
-            <a href="{% url 'selfzone:top' "" %}">
+            <a href="{% url 'selfzone:top' year week "" %}">
                 <img  class="stat-img" style="width: 15%" src="{% static 'selfzone/images/nophoto.png' %}">
             </a>
 
@@ -47,7 +47,7 @@
             <div class="worst-stat">
 
             <h3>All Time</h3>
-            <a href="{% url 'selfzone:top' "" %}">
+            <a href="{% url 'selfzone:bottom' "" %}">
                 <img  class="stat-img" style="width: 15%" src="{% static 'selfzone/images/nophoto.png' %}">
             </a>
 
@@ -57,7 +57,7 @@
             {% endfor %}
 
             <h3>Today</h3>
-            <a href="{% url 'selfzone:top' "" %}">
+            <a href="{% url 'selfzone:bottom' year month day "" %}">
                 <img  class="stat-img" style="width: 15%" src="{% static 'selfzone/images/nophoto.png' %}">
             </a>
 
@@ -67,7 +67,7 @@
             {% endfor %}
 
             <h3>Week</h3>
-            <a href="{% url 'selfzone:top' "" %}">
+            <a href="{% url 'selfzone:bottom' year week "" %}">
                 <img  class="stat-img" style="width: 15%" src="{% static 'selfzone/images/nophoto.png' %}">
             </a>
 

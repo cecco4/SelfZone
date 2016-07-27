@@ -9,6 +9,7 @@ from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
 from django.views.decorators.csrf import csrf_exempt
 
+from isoweek import Week
 from django.db.models import Sum
 from models import SelfieForm, Selfie, Match, History
 from django.contrib.auth.models import User
@@ -167,14 +168,13 @@ def details(request, selfie_id):
     i = 0
     allmatch = matches.order_by("match_date")
     for d in days:
-        while allmatch.all()[i].match_date < timezone.datetime(d.year, d.month, d.day) + timezone.timedelta(days=1):
+        day = timezone.datetime(d.year, d.month, d.day) + timezone.timedelta(days=1)
+        while i < allmatch.count() and allmatch.all()[i].match_date < day:
             value = 1.0/(i+1)
             if allmatch.all()[i].loser == selfie:
                 value = -value
             score += value
             i += 1
-            if i >= allmatch.count():
-                break
         scores.append(score)
 
     data = [("day", "score")]
@@ -206,17 +206,21 @@ def stats(request):
     context = {}
 
     context['allTimeBest']  = Selfie.objects.all().order_by("-score").all()[:3]
-    context['allTimeWorst'] = Selfie.objects.all().order_by("score").all()[:3]
+    context['allTimeWorst'] = reversed(Selfie.objects.all().order_by("score").all()[:3])
 
     day = History.objects.filter(date=timezone.now().date())
     context['todayBest']  = [h.selfie for h in day.order_by("-score").all()[:3]]
-    context['todayWorst'] = [h.selfie for h in day.order_by("score").all()[:3]]
+    context['todayWorst'] = reversed([h.selfie for h in day.order_by("score").all()[:3]])
 
     week = History.objects.filter(date__gte=timezone.now().date() - timezone.timedelta(timezone.now().weekday()))
     weeksum = week.values("selfie").annotate(totscore=Sum("score"))
     context['weekBest']  = [Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("-totscore").all()[:3]]
-    context['weekWorst'] = [Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("totscore").all()[:3]]
+    context['weekWorst'] = reversed([Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("totscore").all()[:3]])
 
+    context['day'] = timezone.now().day
+    context['month'] = timezone.now().month
+    context['year'] = timezone.now().year
+    context['week'] = timezone.now().isocalendar()[1]
     return render(request, 'selfzone/stats.html', context)
 
 
@@ -231,4 +235,58 @@ def bottom(request, num):
     if num == "":
         num = 10
     list = Selfie.objects.order_by("score").all()[:int(num)]
+    return render(request, 'selfzone/top.html', {"list": list})
+
+
+def top_day(request, year, month, day, num):
+    if num == "":
+        num = 10
+    year = int(year)
+    month = int(month)
+    day = int(day)
+    num = int(num)
+
+    scores = History.objects.filter(date=timezone.datetime(year, month, day).date()).order_by("-score").all()[:num]
+    list = [h.selfie for h in scores]
+    return render(request, 'selfzone/top.html', {"list": list})
+
+
+def bottom_day(request, year, month, day, num):
+    if num == "":
+        num = 10
+    year = int(year)
+    month = int(month)
+    day = int(day)
+    num = int(num)
+
+    scores = History.objects.filter(date=timezone.datetime(year, month, day).date()).order_by("score").all()[:num]
+    list = [h.selfie for h in scores]
+    return render(request, 'selfzone/top.html', {"list": list})
+
+
+def top_week(request, year, week, num):
+    if num == "":
+        num = 10
+    year = int(year)
+    week = int(week)
+    num = int(num)
+
+    week = History.objects.filter(date__gte=Week(year, week).monday(),
+                                  date__lte=Week(year, week).friday())
+    weeksum = week.values("selfie").annotate(totscore=Sum("score"))
+    list = [Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("-totscore").all()[:num]]
+    return render(request, 'selfzone/top.html', {"list": list})
+
+
+def bottom_week(request, year, week, num):
+    if num == "":
+        num = 10
+    year = int(year)
+    week = int(week)
+    num = int(num)
+
+    week = History.objects.filter(date__gte=Week(year, week).monday(),
+                                  date__lte=Week(year, week).friday())
+    weeksum = week.values("selfie").annotate(totscore=Sum("score"))
+    list = [Selfie.objects.get(pk=h["selfie"]) for h in weeksum.order_by("totscore").all()[:num]]
     return render(request, 'selfzone/top.html', {"list": list})
