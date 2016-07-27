@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django import forms
+from django.db.transaction import atomic
 import angus
 import sys
 
@@ -145,41 +146,45 @@ class Selfie(models.Model):
     @staticmethod
     def recalculate_all():
         print "delete history"
-        tot = History.objects.count()
-        for i in xrange(0, tot):
-            History.objects.all()[0].delete()
-            progress = (float(i)/tot)*100
-            sys.stdout.write("\r%d%%" % progress)
-            sys.stdout.flush()
+        with atomic():
+            tot = History.objects.count()
+            for i in xrange(0, tot):
+                History.objects.all()[0].delete()
+                progress = (float(i)/tot)*100
+                sys.stdout.write("\r%d%%" % progress)
+                sys.stdout.flush()
 
         print "\nreinit selfie data"
-        for i in xrange(0, Selfie.objects.count()):
-            s = Selfie.objects.all()[i]
-            s.won = 0
-            s.loss = 0
-            s.score = 1500.0
-            s.save()
-            progress = (float(i)/Selfie.objects.count())*100
-            sys.stdout.write("\r%d%%" % progress)
-            sys.stdout.flush()
+        with atomic():
+            for i in xrange(0, Selfie.objects.count()):
+                s = Selfie.objects.all()[i]
+                s.won = 0
+                s.loss = 0
+                s.score = 1500.0
+                s.save()
+                progress = (float(i)/Selfie.objects.count())*100
+                sys.stdout.write("\r%d%%" % progress)
+                sys.stdout.flush()
 
         print "\ncalculate matches"
         tot = Match.objects.count()
         n = 0
-        for m in Match.objects.order_by("match_date"):
-            m.winner.win_against(m.loser, m.match_date)
-            n+=1
+        with atomic():
+            for m in Match.objects.order_by("match_date"):
+                m.winner.win_against(m.loser, m.match_date)
+                n+=1
 
-            progress = (float(n) / tot) * 100
-            sys.stdout.write("\r%d%%" % progress)
-            sys.stdout.flush()
+                progress = (float(n) / tot) * 100
+                sys.stdout.write("\r%d%%" % progress)
+                sys.stdout.flush()
+        print ""
 
     def win_against(self, loser, date):
         self.won += 1
         loser.loss += 1
 
         w_score = self.score + 1.0/(self.won+self.loss)
-        l_score = loser.score + 1.0/(loser.won+loser.loss)
+        l_score = loser.score - 1.0/(loser.won+loser.loss)
         self.score = w_score
         loser.score = l_score
 

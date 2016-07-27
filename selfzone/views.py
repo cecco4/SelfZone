@@ -72,6 +72,9 @@ def select_selfies():
 
     if f.count() == 1:
         return s1, f.all()[0]
+    elif f.count() < 1:
+        return s1, withtags.all()[randint(0, withtags.count()-1)]
+
     # selects from filtred selfie (random weighted by delta score and number of taken match)
     # filtred selfies are randomic limited
     weights = []
@@ -82,8 +85,8 @@ def select_selfies():
         delta_score = float(abs(s.score-s1.score))
         weights.append(delta_score*matches)
 
+    weights = [max(weights) - i for i in weights]
     if sum(weights) != 0:
-        weights = [max(weights)-i for i in weights]
         weights = [i/sum(weights) for i in weights]
         s2 = choice(selected, 1, p=weights)[0]
     else:
@@ -159,8 +162,20 @@ def details(request, selfie_id):
     days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
     days = days[::-1]
 
-    hist = selfie.history_set
-    scores = [hist.filter(date=d)[0].score if hist.filter(date=d).exists() else 1500.0 for d in days]
+    score = 1500.0
+    scores = []
+    i = 0
+    allmatch = matches.order_by("match_date")
+    for d in days:
+        while allmatch.all()[i].match_date < timezone.datetime(d.year, d.month, d.day) + timezone.timedelta(days=1):
+            value = 1.0/(i+1)
+            if allmatch.all()[i].loser == selfie:
+                value = -value
+            score += value
+            i += 1
+            if i >= allmatch.count():
+                break
+        scores.append(score)
 
     data = [("day", "score")]
     for i in range(len(days)):
