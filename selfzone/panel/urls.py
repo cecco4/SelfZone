@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^ordered/(?P<type>(score|older|newer))$', views.index_ordered, name='index_ordered'),
 
     url(r'^logout/$', views.logout_view, name='logout_view'),
     url(r'^', include('django.contrib.auth.urls')),

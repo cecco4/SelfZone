@@ -144,11 +144,11 @@ def vote(request, s1_id, s2_id, voted):
 
 def details(request, selfie_id):
     selfie = get_object_or_404(Selfie, pk=selfie_id)
-    pos = Selfie.objects.filter(score__gt=selfie.score).count() +1
+    pos = selfie.get_position()
 
     matches = (selfie.lost_match_set.all() | selfie.won_match_set.all())
     lasts = []
-    for m in matches.order_by("match_date")[:10]:
+    for m in matches.order_by("-match_date")[:10]:
         s = None
         color = None
         if m.winner.id == selfie.id:

@@ -20,7 +20,25 @@
     </a>
 
     <br>
-    <h3>Your selfies:</h3>
+
+    <div class="row">
+    <div class="col-md-6">
+        <h3>Your selfies:</h3>
+    </div>
+
+    <div class="col-md-6" style="margin-top: 20px">
+    order by
+    <form enctype="multipart/form-data" method="post" id="order">
+        {% csrf_token %}
+        <select name="menu" onchange="this.form.submit()">
+        <option value="0" {%if request.get_full_path|slice:"-6:" == "/score"%}selected{% endif %}> score </option>
+        <option value="1" {%if request.get_full_path|slice:"-6:" == "/older"%}selected{% endif %}> older </option>
+        <option value="2" {%if request.get_full_path|slice:"-6:" == "/newer"%}selected{% endif %}> newer </option>
+        </select>
+    </form>
+    </div>
+
+    </div>
 
     <div class="photos">
         {% for s in selfies %}
@@ -30,6 +48,14 @@
                     <div class="status-bar">
                         <div class="win-bar" style="width:calc({{s.w}}% + 1px)"></div>
                         <div class="loss-bar" style="width:calc({{ s.w | add:-100 | abs }}% + 1px)"></div>
+                    </div>
+                    <div class="pos-badge">
+                        <div class="pos-num"> {{ s.s.get_position }}°</div>
+                        {% if s.s.is_improving == True %}
+                            <div class="arrow-up"></div>
+                        {% elif s.s.is_improving == False %}
+                            <div class="arrow-down"></div>
+                        {% endif %}
                     </div>
                 </figure>
             </a>

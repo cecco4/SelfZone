@@ -132,7 +132,7 @@ input[type=file] {
     background-color: #740066;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], select {
     color: #c7c7c7;
     margin: 0;
     background-color: #333;
@@ -260,8 +260,7 @@ body {
 
 /* image grid */
 .photos {
-    display: flex;
-    flex-wrap: wrap;
+    float: left;
     padding: 20px;
 }
 
@@ -352,6 +351,49 @@ body {
     background-color: red;
     height: 40px;
     width: 50%;
+}
+
+.pos-badge {
+    position: absolute;
+    top: 10px;
+    background-color:  rgba(171, 0, 143, 0.8);
+    box-shadow: 0 4px 4px 0 #740066, 0 4px 4px 0 #740066;
+    right: 10px;
+    height: 40px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.pos-num {
+    position: absolute;
+    top: 8px;
+    right: -1px;
+    height: 20%;
+    width: 100%;
+    font-size: large;
+    color: #c7c7c7;
+}
+
+.arrow-up {
+    position: absolute;
+    top:0;
+    left: 17px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid green;
+}
+
+.arrow-down {
+    position: absolute;
+    top: 32px;
+    left: 17px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid red;
 }
 
 .stat-img {
