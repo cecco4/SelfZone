@@ -143,19 +143,15 @@ class Selfie(models.Model):
     def get_position(self):
         return Selfie.objects.filter(score__gt=self.score).count() + 1
 
-    def is_improving(self):
+    def improving_tax(self):
         hist = self.history_set.filter(date__lt=timezone.now().date()).order_by("-date").all()
         n = len(hist)
         if n == 0:
-            if self.score == 1500.0:
-                return None
-            return self.score > 1500.0
+            return self.score - 1500.0
         else:
             scores = [ h.score for h in hist[:3]]
             med = sum(scores) / len(scores)
-            if med == 1500.0:
-                return None
-            return med > 1500.0
+            return med - 1500.0
 
     @staticmethod
     def get_unrecognized():

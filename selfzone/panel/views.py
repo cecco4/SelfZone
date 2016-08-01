@@ -33,9 +33,11 @@ def index_ordered(request, type):
                 wp = 50
             else:
                 wp = float(s.won) * 100 / float(s.won + s.loss)
-            selfies.append({"s": s, "w": wp})
+            selfies.append({"s": s, "w": wp, "imt": s.improving_tax()})
 
         context["selfies"] = selfies
+        context["max_imt"] = max(selfies, key=lambda x: x["imt"])
+        context["min_imt"] = min(selfies, key=lambda x: x["imt"])
         return render(request, 'selfzone/panel/index.html', context)
 
     else:

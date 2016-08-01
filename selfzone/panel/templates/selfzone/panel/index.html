@@ -19,14 +19,27 @@
         <button type="button" class="self-btn" style="margin: 20px">logout</button>
     </a>
 
+    <div class="row">
+        <div class="best-stat" style="display: inline-block; width: 20%; margin: 50px; text-align: center;">
+            <img class="new-img" style="width: 100%;" src="{{ max_imt.s.photo.url }}"></a>
+            <br>
+            Best improving
+        </div>
+        <div class="worst-stat" style="display: inline-block; width: 20%; margin: 50px; text-align: center;">
+            <img class="new-img" style="width: 100%;" src="{{ min_imt.s.photo.url }}"></a>
+            <br>
+            Worst improving
+        </div>
+    </div>
+
     <br>
 
     <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6" style="vertical-align: middle">
         <h3>Your selfies:</h3>
     </div>
 
-    <div class="col-md-6" style="margin-top: 20px">
+    <div class="col-md-6" style="vertical-align: middle">
     order by
     <form enctype="multipart/form-data" method="post" id="order">
         {% csrf_token %}
@@ -37,7 +50,6 @@
         </select>
     </form>
     </div>
-
     </div>
 
     <div class="photos">
@@ -51,9 +63,9 @@
                     </div>
                     <div class="pos-badge">
                         <div class="pos-num"> {{ s.s.get_position }}°</div>
-                        {% if s.s.is_improving == True %}
+                        {% if s.imt > 0 %}
                             <div class="arrow-up"></div>
-                        {% elif s.s.is_improving == False %}
+                        {% elif s.imt < 0 %}
                             <div class="arrow-down"></div>
                         {% endif %}
                     </div>
