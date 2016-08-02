@@ -19,16 +19,32 @@
         <button type="button" class="self-btn" style="margin: 20px">logout</button>
     </a>
 
+
     <div class="row">
-        <div class="best-stat" style="display: inline-block; width: 20%; margin: 50px; text-align: center;">
+        <div class="col-md-6">
+        <div class="best-stat panel-stats">
             <img class="new-img" style="width: 100%;" src="{{ max_imt.s.photo.url }}"></a>
             <br>
             Best improving
         </div>
-        <div class="worst-stat" style="display: inline-block; width: 20%; margin: 50px; text-align: center;">
+        <div class="worst-stat panel-stats">
             <img class="new-img" style="width: 100%;" src="{{ min_imt.s.photo.url }}"></a>
             <br>
             Worst improving
+        </div>
+        </div>
+
+        <div class="col-md-6">
+        <div class="best-stat panel-stats">
+            <img class="new-img" style="width: 100%;" src="{{ max_first.selfie.photo.url }}"></a>
+            <br>
+            Best first day score  <br>{{ max_first.date }}
+        </div>
+            <div class="worst-stat panel-stats">
+            <img class="new-img" style="width: 100%;" src="{{ min_first.selfie.photo.url }}"></a>
+            <br>
+            Worst first day score <br>{{ min_first.date }}
+        </div>
         </div>
     </div>
 

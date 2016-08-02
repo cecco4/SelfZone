@@ -153,6 +153,12 @@ class Selfie(models.Model):
             med = sum(scores) / len(scores)
             return med - 1500.0
 
+    def first_day_score(self):
+        try:
+            return self.history_set.order_by("date")[0]
+        except IndexError:
+            return None
+
     @staticmethod
     def get_unrecognized():
         return Selfie.objects.filter(faces=0)
@@ -224,6 +230,9 @@ class Match(models.Model):
     loser = models.ForeignKey(Selfie, related_name="lost_match_set")
     match_date = models.DateTimeField(default=timezone.now)
 
+    def __unicode__(self):
+        return str(self.match_date) + " " + str(self.winner) + "-" + str(self.loser)
+
 
 class History(models.Model):
     selfie = models.ForeignKey(Selfie, related_name="history_set")
@@ -240,6 +249,9 @@ class History(models.Model):
         start = self.date
         end = start + timezone.timedelta(days=1)
         return self.selfie.lost_match_set.filter(match_date__gte=start, match_date__lte=end).count()
+
+    def __unicode__(self):
+        return str(self.selfie) + " " + str(self.date) + " score: " + str(self.score)
 
 
 class SelfieForm(forms.ModelForm):

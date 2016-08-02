@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from selfzone.models import Selfie, Match
+from selfzone.models import Selfie, Match, History
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-
+import itertools
 
 @login_required
 def index(request):
@@ -38,6 +38,20 @@ def index_ordered(request, type):
         context["selfies"] = selfies
         context["max_imt"] = max(selfies, key=lambda x: x["imt"])
         context["min_imt"] = min(selfies, key=lambda x: x["imt"])
+
+        # verbose but optimized
+        min_score = max_score = None
+        for s in list:
+            score = s.first_day_score()
+            if score is None:
+                continue
+            if min_score is None or score.score < min_score.score:
+                min_score = score
+            if max_score is None or score.score > max_score.score:
+                max_score = score
+
+        context["max_first"] = max_score
+        context["min_first"] = min_score
         return render(request, 'selfzone/panel/index.html', context)
 
     else:
