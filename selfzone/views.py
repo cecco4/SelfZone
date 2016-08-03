@@ -31,9 +31,23 @@ def index(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index_voted(request, old1_id, old2_id, voted):
     context = {}
-    context["old1"] = get_object_or_404(Selfie, pk=old1_id)
-    context["old2"] = get_object_or_404(Selfie, pk=old2_id)
+    old1 = get_object_or_404(Selfie, pk=old1_id)
+    old2 = get_object_or_404(Selfie, pk=old2_id)
+
+    agree = 50.0
+    old1_w = old1.won_match_set.filter(loser=old2).count()
+    old2_w = old2.won_match_set.filter(loser=old1).count()
+
+    print "wins: ", old1_w, old2_w
+    if voted == "left":
+        agree = old1_w*100.0 / (old1_w + old2_w)
+    elif voted == "right":
+        agree = old2_w*100.0 / (old1_w + old2_w)
+
+    context["old1"] = old1
+    context["old2"] = old2
     context["voted"] = voted
+    context["agree"] = int(agree)
     context['s1'], context['s2'] = select_selfies()
     return render(request, 'selfzone/index.html', context)
 
@@ -186,12 +200,12 @@ def details(request, selfie_id):
     lost_with = selfie.lost_match_set.order_by("winner")
     if lost_with.count() > 0:
         grouped = itertools.groupby(lost_with, lambda r: r.winner)
-        nightmare = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
+        nightmare = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0]
 
     win_with = selfie.won_match_set.order_by("loser")
     if win_with.count() > 0:
         grouped = itertools.groupby(win_with, lambda r: r.loser)
-        easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0][0]
+        easy = sorted([(s, len(list(count))) for s, count in grouped], lambda x,y: cmp(y[1], x[1]))[0]
 
     context = {'selfie': selfie, 'pos': pos, 'lasts': lasts, 'chart': chart, 'nightmare': nightmare, 'easy': easy}
     return render(request, 'selfzone/details.html', context)

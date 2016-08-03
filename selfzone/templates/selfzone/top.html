@@ -4,14 +4,13 @@
 {% block body %}
     <br><br>
 
-    <div class="top-photos">
+    <div class="photos">
     {% for s in list %}
     <a href="{% url 'selfzone:details' s.id %}">
         <figure>
             <img src="{{ s.photo.url }}">
-            <div class="status-bar">
-                <div class="win-bar" style="width:calc({{s.w}}% + 1px)"></div>
-                <div class="loss-bar" style="width:calc({{ s.w | add:-100 | abs }}% + 1px)"></div>
+            <div class="pos-badge">
+                <div class="pos-num"> {{ forloop.counter }}°</div>
             </div>
         </figure>
     </a>
