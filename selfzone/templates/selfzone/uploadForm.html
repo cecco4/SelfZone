@@ -14,11 +14,16 @@
 
 {% block body %}
 
+    {% if form.errors %}
+      please insert missing data
+    {% endif %}
+
     <form enctype="multipart/form-data" method="post" id="upload">
     {% csrf_token %}
-        <p><div class="fakeFileButton"><span id="browse">click to load selfie</span>{{ form.photo }}</div></p>
-        <div style="margin: 10px auto; max-width: 50%; overflow: hidden">
-            <img src="{% static 'selfzone/images/nophoto.png' %}" id="target" style="display: block; width: 100%; margin: auto"/>
+        <p><div id="up-btn" class="fakeFileButton">
+        <span id="browse">click to load selfie</span>{{ form.photo }}</div></p>
+        <div style="margin: 10px auto; max-width: 30%; overflow: hidden">
+            <img src="{% static 'selfzone/images/nophoto.png' %}" id="target" style="display: none; width: 100%; margin: auto"/>
         </div>
         <p> {{ form.info |add_class:"input-lg" |attr:"placeholder:picture description" |attr:"cols:20" |attr:"rows:3" |attr:"wrap:hard" |set_data:"limit-rows:true"}} </p>
 
@@ -31,15 +36,19 @@
     </form>
 
     <script type='text/javascript'>
-        var input = document.getElementById('id_photo');
         var jcrop_api;
+        var input = document.getElementById('id_photo');
 
         input.onchange = function () {
+            console.log(input.files + input.files[0]);
 
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
+                    input.style.display = "none";
+                    document.getElementById("up-btn").style.display = "none";
+
                     t = $('#target');
 
                     t.attr('src', e.target.result);
@@ -70,6 +79,10 @@
                 reader.readAsDataURL(input.files[0]);
             }
         };
+
+        $(document).ready( function() {
+            input.onchange()
+        });
 
         // Simple event handler, called from onChange and onSelect
         // event handlers, as per the Jcrop invocation above

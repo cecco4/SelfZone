@@ -117,7 +117,7 @@ def upload(request):
 
             print "new salfie: ", instance, "; anlisys result: ", instance.analyze()
             return HttpResponseRedirect(reverse('selfzone.panel:index'))
-        return HttpResponse('Data Not Valid')
+        return render(request, 'selfzone/uploadForm.html', {'form': form})
     else:
         form = SelfieForm()
         return render(request, 'selfzone/uploadForm.html', {'form': form})
