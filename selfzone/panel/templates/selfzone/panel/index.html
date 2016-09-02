@@ -19,6 +19,33 @@
         <button type="button" class="self-btn" style="margin: 20px">logout</button>
     </a>
 
+    <div class="row">
+        <div class="col-md-6">
+        <div class="best-stat panel-stats">
+            <img class="new-img" style="width: 100%;" src="{{ today_best.selfie.photo.url }}"></a>
+            <br>
+            Best today score
+        </div>
+            <div class="worst-stat panel-stats">
+            <img class="new-img" style="width: 100%;" src="{{ today_worst.selfie.photo.url }}"></a>
+            <br>
+            Worst today score
+        </div>
+        </div>
+
+        <div class="col-md-6">
+        <div class="best-stat panel-stats">
+            <img class="new-img" style="width: 100%;" src="{{ week_best.photo.url }}"></a>
+            <br>
+            Best week score
+        </div>
+            <div class="worst-stat panel-stats">
+            <img class="new-img" style="width: 100%;" src="{{ week_worst.photo.url }}"></a>
+            <br>
+            Worst week score
+        </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-6">

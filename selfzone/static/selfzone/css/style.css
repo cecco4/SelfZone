@@ -431,6 +431,7 @@ body {
     display: inline-block;
     width: 40%;
     margin: 8px;
+    margin-top: 20px;
     text-align: center;
     font-size: smaller;
 }
