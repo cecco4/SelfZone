@@ -20,7 +20,7 @@
         {{ form.password1.errors.as_text }}
       </p>
       <p>
-        {{ form.password2 |attr:"placeholder:password"}}<br>
+        {{ form.password2 |attr:"placeholder:repeat password"}}<br>
         {{ form.password2.errors.as_text }}
       </p>
       {% if next %}
