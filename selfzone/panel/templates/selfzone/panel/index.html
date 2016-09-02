@@ -19,6 +19,8 @@
         <button type="button" class="self-btn" style="margin: 20px">logout</button>
     </a>
 
+    {% if selfies %}
+
     <div class="row">
         <div class="col-md-6">
         <div class="best-stat panel-stats">
@@ -116,4 +118,7 @@
             </a>
         {% endfor %}
     </div>
+    {% else %}
+        <br> <h3>no selfies uploaded yet</h3> <br><br>
+    {% endif %}
 {% endblock %}

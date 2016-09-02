@@ -1,7 +1,7 @@
 {% extends "selfzone/base.html" %}
 {% load widget_tweaks %}
 
-{% comment %}   Main page to authenticate users. {% endcomment %}
+{% comment %}   Main page to register users. {% endcomment %}
 {% block head %}
   <title>Django Mysite | Login</title>
 {% endblock %}
@@ -16,21 +16,19 @@
         {{ form.username.errors.as_text }}
       </p>
       <p>
-        {{ form.password |attr:"placeholder:password"}}<br>
-        {{ form.password.errors.as_text }}
+        {{ form.password1 |attr:"placeholder:password"}}<br>
+        {{ form.password1.errors.as_text }}
+      </p>
+      <p>
+        {{ form.password2 |attr:"placeholder:password"}}<br>
+        {{ form.password2.errors.as_text }}
       </p>
       {% if next %}
         <input type="hidden" name="next" value="{{ next }}" />
       {% else %}
         <input type="hidden" name="next" value="/portal/" />
       {% endif %}
-      <input type="submit" class="self-btn" value="login" />
+      <input type="submit" class="self-btn" value="Register" />
     </form>
   </section>
-
-    <br>
-    <p>You are not an user? please
-        <a class="text-primary" href="{% url 'selfzone.panel:register' %}">Register</a>
-    </p>
-    <br><br>
 {% endblock %}

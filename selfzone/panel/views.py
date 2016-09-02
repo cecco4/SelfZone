@@ -38,6 +38,9 @@ def index_ordered(request, type):
             selfies.append({"s": s, "w": wp, "imt": s.improving_tax()})
 
         context["selfies"] = selfies
+        if len(selfies) == 0:
+            return render(request, 'selfzone/panel/index.html', context)
+
         context["max_imt"] = max(selfies, key=lambda x: x["imt"])
         context["min_imt"] = min(selfies, key=lambda x: x["imt"])
 
@@ -84,3 +87,7 @@ def logout_view(request):
     "Log users out and re-direct them to the main page."
     logout(request)
     return HttpResponseRedirect(reverse('selfzone:index'))
+
+
+def register_ok(request):
+    return render(request, 'selfzone/panel/register_ok.html')
