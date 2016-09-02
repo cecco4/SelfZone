@@ -8,3 +8,9 @@ selfzone/migrations
 
 *.pyc
 env/
+
+relazione/*.aux
+relazione/*.dvi
+relazione/*.log
+relazione/*.pdf
+relazione/*.toc
