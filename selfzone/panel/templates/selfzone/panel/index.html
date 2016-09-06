@@ -22,34 +22,25 @@
     {% if selfies %}
 
     <div class="row">
+        {% if today_best %}
         <div class="col-md-6">
         <div class="best-stat panel-stats">
-            {% if today_best %}
-                <img class="new-img" style="width: 100%;" src="{{ today_best.selfie.photo.url }}"></a>
-            {% else %}
-                No data
-            {% endif %}
+            <img class="new-img" style="width: 100%;" src="{{ today_best.selfie.photo.url }}"></a>
             <br>
             Best today score
         </div>
         <div class="worst-stat panel-stats">
-            {% if today_worst %}
-                <img class="new-img" style="width: 100%;" src="{{ today_worst.selfie.photo.url }}"></a>
-            {% else %}
-                No data
-            {% endif %}
+            <img class="new-img" style="width: 100%;" src="{{ today_worst.selfie.photo.url }}"></a>
             <br>
             Worst today score
         </div>
         </div>
+        {% endif %}
 
+        {% if week_best %}
         <div class="col-md-6">
         <div class="best-stat panel-stats">
-            {% if week_best %}
-                <img class="new-img" style="width: 100%;" src="{{ week_best.photo.url }}"></a>
-            {% else %}
-                No data
-            {% endif %}
+            <img class="new-img" style="width: 100%;" src="{{ week_best.photo.url }}"></a>
             <br>Best week score
         </div>
         <div class="worst-stat panel-stats">
@@ -62,6 +53,7 @@
             Worst week score
         </div>
         </div>
+        {% endif %}
     </div>
 
     <div class="row">

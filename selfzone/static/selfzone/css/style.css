@@ -69,7 +69,7 @@
     background-color: #333;
     font-size: 20px;
     color: #da00ba;
-    border-radius: 20%;
+    border-radius: 10px;
     border: 4px solid #da00ba;
 	font-family: Lobster;
     text-shadow: 2px 0 0 #232323, -2px 0 0 #232323, 0 2px 0 #232323, 0 -2px 0 #232323, 1px 1px #232323,
@@ -109,7 +109,7 @@ input[type=file] {
     background-color: #333;
     font-size: 20px;
     color: #da00ba;
-    border-radius: 20%;
+    border-radius: 10px;
     border: 4px solid #da00ba;
 	font-family: Lobster;
     text-shadow: 2px 0 0 #232323, -2px 0 0 #232323, 0 2px 0 #232323, 0 -2px 0 #232323, 1px 1px #232323,
@@ -434,4 +434,22 @@ body {
     margin-top: 20px;
     text-align: center;
     font-size: smaller;
+}
+
+.score-box {
+    display: inline-block;
+    background-color: #333;
+    border-radius: 10px;
+    border: 1px solid #da00ba;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .5);
+    padding: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+
+    outline: none;
+    min-width: 50%;
+}
+
+table, td, th {
+    border: 1px solid #da00ba;
 }

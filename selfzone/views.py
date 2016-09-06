@@ -180,6 +180,7 @@ def details(request, selfie_id):
     days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
     days = days[::-1]
 
+    # TODO: reverse calculation
     score = 1500.0
     scores = []
     i = 0

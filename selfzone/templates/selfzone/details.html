@@ -1,7 +1,8 @@
 {% extends 'selfzone/base.html' %}
+{% load staticfiles %}
 
 {% block head %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi" xmlns="http://www.w3.org/1999/html"></script>
     <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart"]});
     </script>
@@ -10,13 +11,33 @@
 
 {% block body %}
     <div class="row" style="padding-top: 25px">
-        <div class="col-sm-4"><img class="new-img" style="width: 80%;" src="{{ selfie.photo.url }}"></div>
-        <div class="col-sm-8" style="text-align: left; padding: 30px">
-            score: {{ selfie.score }} <br>
-            won: {{ selfie.won }} <br>
-            lost: {{ selfie.loss }} <br>
+        <div class="col-sm-4">
+            <div class="row"><img class="new-img" style="width: 80%;" src="{{ selfie.photo.url }}"></div>
+            <div class="row"><h4>{{ selfie.info }} <h3 class="row text-primary">@{{ selfie.user }}</h3></h4></div>
+        </div>
+        <div class="col-sm-8" style="text-align: center; padding: 30px;">
+            <div class="row" style="color: #da00ba">
+                score<br>
+                <div class="score-box" style="text-align: center"><h3>{{ selfie.score | floatformat:3}}</h3></div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xs-6" style="color: green">
+                    <div class="score-box" style="border-color: green"><h3>{{ selfie.won }}</h3></div>
+                    <br>won
+                </div>
+                <div class="col-xs-6" style="color: red">
+                    <div class="score-box" style="border-color: red"><h3>{{ selfie.loss }}</h3></div>
+                    <br>lost
+                </div>
+            </div>
+            <br>
+            <div class="row" style="color: #da00ba">
+                position<br>
+                <div class="score-box" style="text-align: center"><h3>{{ pos }}</h3></div>
+            </div>
 
-            position:  {{ pos }}<br>
+            <!--
 
             tags:
             {% for t in selfie.tags.all %}
@@ -25,6 +46,7 @@
             <br>
 
             user: {{ selfie.user }}
+            -->
         </div>
     </div>
     <div class="row" style="margin-top: 25px">
@@ -35,22 +57,27 @@
         <div class="col-sm-3 col-xs-6">
             <h3>easy:</h3>
             {% if easy != None %}
-            <a href="{% url 'selfzone:details' easy.0.id %}">
-            <img class="new-img" style="width: 80%;" src="{{ easy.0.photo.url }}"></a>
-            {{ easy.1 }} wins against
+                <a href="{% url 'selfzone:details' easy.0.id %}">
+                <img class="new-img" style="width: 80%;" src="{{ easy.0.photo.url }}"></a>
+                {{ easy.1 }} wins against
+            {% else %}
+               <img  class="new-img" style="width: 80%" src="{% static 'selfzone/images/nophoto.png' %}">
             {% endif %}
         </div>
         <div class="col-sm-3 col-xs-6">
             <h3>nightmare:</h3>
-            {% if nightmare != None %}
-            <a href="{% url 'selfzone:details' nightmare.0.id %}">
-            <img class="new-img" style="width: 80%;" src="{{ nightmare.0.photo.url }}"></a>
-            {{ nightmare.1 }} loses against
+                {% if nightmare != None %}
+                <a href="{% url 'selfzone:details' nightmare.0.id %}">
+                <img class="new-img" style="width: 80%;" src="{{ nightmare.0.photo.url }}"></a>
+                {{ nightmare.1 }} loses against
+            {% else %}
+                <img  class="new-img" style="width: 80%" src="{% static 'selfzone/images/nophoto.png' %}">
             {% endif %}
         </div>
     </div>
 
     <br>
+    {% if lasts %}
     <div class="row" style="padding: 20px">
         <div class="col-sm-2"> <h4>lasts matches: </h4> </div>
         <div class="col-sm-10">
@@ -61,5 +88,6 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
 
 {% endblock body %}
