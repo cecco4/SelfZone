@@ -47,27 +47,27 @@ def index_ordered(request, type):
         # verbose but optimized
         min_score = max_score = None
         for s in list:
-            score = s.first_day_score()
-            if score is None:
-                continue
-            if min_score is None or score.score < min_score.score:
-                min_score = score
-            if max_score is None or score.score > max_score.score:
-                max_score = score
+            first_day = s.first_day_score()
+            if min_score is None or first_day.score < min_score.score:
+                min_score = first_day
+            if max_score is None or first_day.score > max_score.score:
+                max_score = first_day
 
         context["max_first"] = max_score
         context["min_first"] = min_score
 
         day = History.objects.filter(date=timezone.now().date(), selfie__in=list)
-        context['today_best'] = day.order_by("-score").all()[0]
-        context['today_worst'] = day.order_by("score").all()[0]
+        if len(day) > 0:
+            context['today_best'] = day.order_by("-score").all()[0]
+            context['today_worst'] = day.order_by("score").all()[0]
 
         week = History.objects.filter(
             date__gte=timezone.now().date() - timezone.timedelta(timezone.now().weekday()),
             selfie__in=list)
         weeksum = week.values("selfie").annotate(totscore=Sum("score"))
-        context['week_best'] = Selfie.objects.get(pk=weeksum.order_by("-totscore").all()[0]["selfie"])
-        context['week_worst'] = Selfie.objects.get(pk=weeksum.order_by("totscore").all()[0]["selfie"])
+        if len(week) > 0:
+            context['week_best'] = Selfie.objects.get(pk=weeksum.order_by("-totscore").all()[0]["selfie"])
+            context['week_worst'] = Selfie.objects.get(pk=weeksum.order_by("totscore").all()[0]["selfie"])
 
         return render(request, 'selfzone/panel/index.html', context)
 

@@ -157,7 +157,7 @@ class Selfie(models.Model):
         try:
             return self.history_set.order_by("date")[0]
         except IndexError:
-            return None
+            return History(selfie=self, date=self.pub_date, score=1500)
 
     @staticmethod
     def get_unrecognized():

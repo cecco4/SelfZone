@@ -122,6 +122,9 @@ def upload(request):
             instance.info = form.cleaned_data["info"]
             instance.save()
 
+            hist = History(selfie=instance, date=instance.pub_date, matches=0, score=1500)
+            hist.save()
+
             img = Image.open(instance.photo.file)
             x1 = float(request.POST["x1"])
             x2 = float(request.POST["x2"])
