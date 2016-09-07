@@ -38,7 +38,7 @@
         {% endif %}
 
         {% if week_best %}
-        <div class="col-md-6">
+        {% if today_best %}<div class="col-md-6">{% else %}<div class="col-md-6 col-md-offset-3">{% endif %}
         <div class="best-stat panel-stats">
             <img class="new-img" style="width: 100%;" src="{{ week_best.photo.url }}"></a>
             <br>Best week score

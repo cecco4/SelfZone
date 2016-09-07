@@ -176,10 +176,8 @@ def details(request, selfie_id):
             color = "red"
         lasts.append({"selfie": s, "color": color})
 
-    # scores per day
+    # scores graph for last 60 days
     days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
-
-    # TODO: reverse calculation
     score = selfie.score
     scores = []
     allmatch = matches.order_by("match_date")
@@ -187,6 +185,7 @@ def details(request, selfie_id):
     for d in days:
         scores.append(score)
         day = timezone.datetime(d.year, d.month, d.day)
+        # calculation is reversed for performance
         while i >= 0 and allmatch.all()[i].match_date > day:
             value = 1.0/(i+1)
             if allmatch.all()[i].winner == selfie:
