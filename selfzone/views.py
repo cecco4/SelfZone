@@ -186,7 +186,7 @@ def details(request, selfie_id):
     i = allmatch.count() -1
     for d in days:
         scores.append(score)
-        day = timezone.datetime(d.year, d.month, d.day) - timezone.timedelta(days=i)
+        day = timezone.datetime(d.year, d.month, d.day)
         while i >= 0 and allmatch.all()[i].match_date > day:
             value = 1.0/(i+1)
             if allmatch.all()[i].winner == selfie:
