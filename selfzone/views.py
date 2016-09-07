@@ -178,25 +178,24 @@ def details(request, selfie_id):
 
     # scores per day
     days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
-    days = days[::-1]
 
     # TODO: reverse calculation
-    score = 1500.0
+    score = selfie.score
     scores = []
-    i = 0
     allmatch = matches.order_by("match_date")
+    i = allmatch.count() -1
     for d in days:
-        day = timezone.datetime(d.year, d.month, d.day) + timezone.timedelta(days=1)
-        while i < allmatch.count() and allmatch.all()[i].match_date < day:
+        scores.append(score)
+        day = timezone.datetime(d.year, d.month, d.day) - timezone.timedelta(days=i)
+        while i >= 0 and allmatch.all()[i].match_date > day:
             value = 1.0/(i+1)
-            if allmatch.all()[i].loser == selfie:
+            if allmatch.all()[i].winner == selfie:
                 value = -value
             score += value
-            i += 1
-        scores.append(score)
+            i -= 1
 
     data = [("day", "score")]
-    for i in range(len(days)):
+    for i in reversed(range(len(days))):
         data.append((days[i].strftime("%Y-%m-%d"), scores[i]))
     chart = AreaChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
 
