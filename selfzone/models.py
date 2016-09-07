@@ -164,6 +164,10 @@ class Selfie(models.Model):
         return Selfie.objects.filter(faces=0)
 
     @staticmethod
+    def get_tagged(tag):
+        return Selfie.objects.filter(tags__tag=tag)
+
+    @staticmethod
     def recalculate_all():
         print "delete history"
         pbar = ProgressBar().start()
@@ -185,6 +189,9 @@ class Selfie(models.Model):
                 s.loss = 0
                 s.score = 1500.0
                 s.save()
+                hist = History(selfie=s, date=s.pub_date, matches=0, score=1500)
+                hist.save()
+
                 pbar.update(i)
         pbar.update(pbar.maxval)
 
@@ -202,7 +209,9 @@ class Selfie(models.Model):
         pbar.update(pbar.maxval)
         print ""
 
-    def win_against(self, loser, date):
+    def win_against(self, loser, date=timezone.now()):
+        Match.objects.create(winner=self, loser=loser, match_date=date)
+
         self.won += 1
         loser.loss += 1
 

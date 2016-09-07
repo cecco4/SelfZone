@@ -151,9 +151,7 @@ def vote(request, s1_id, s2_id, voted):
         winner = s2
         loser = s1
 
-    m = Match.objects.create(winner=winner, loser=loser)
-    winner.win_against(loser, m.match_date)
-
+    winner.win_against(loser)
     # return HttpResponse("Won " + str(sW.id) + ": " + str(sW.won) + "/" + str(sW.loss) + "\n" +
     #                    "Lost " + str(sL.id) + ": " + str(sL.won) + "/" + str(sL.loss) + "\n")
     return HttpResponseRedirect(reverse('selfzone:index_voted', args=(s1.id, s2.id, voted)))
@@ -220,6 +218,22 @@ class AreaChart(gchart.LineChart):
 
 def stats(request):
     context = {}
+
+    # TODO: finish statistics
+    # get numbers
+    context["tot_selfie"] = Selfie.objects.count() - Selfie.get_unrecognized().count()
+    context["tot_matches"] = Match.objects.count()
+
+    male        = Selfie.get_tagged("male").count()
+    female      = Selfie.get_tagged("female").count()
+    young       = Selfie.get_tagged("young").count()
+    old         = Selfie.get_tagged("old").count()
+    baby        = Selfie.get_tagged("baby").count()
+    neutral     = Selfie.get_tagged("neutral").count()
+    sad         = Selfie.get_tagged("sad").count()
+    anger       = Selfie.get_tagged("anger").count()
+    happiness   = Selfie.get_tagged("happiness").count()
+    surprise    = Selfie.get_tagged("surprise").count()
 
     context['allTimeBest']  = Selfie.objects.all().order_by("-score").all()[:3]
     context['allTimeWorst'] = reversed(Selfie.objects.all().order_by("score").all()[:3])
