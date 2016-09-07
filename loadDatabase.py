@@ -116,49 +116,55 @@ if queryYN("generate votes"):
 
         while True:
             try:
-                delta_days = int(raw_input("last days to calc:"))
-                delta_sec = int(raw_input("delta time (secs):"))
+                delta_days = int(raw_input("last days to calc: "))
+                delta_sec = int(raw_input("delta time (secs): "))
 
                 if delta_days <0 or delta_sec <0:
                     print "insert better values"
                     continue
-                break
+
+                print "estimated matches to calc: ", timezone.timedelta(days=delta_days).total_seconds() / delta_sec,
+                if queryYN(" do you want to proceed?"):
+                    break
+
             except ValueError:
                 print "insert only integer values"
                 continue
         delta = timezone.timedelta(days=delta_days)
         start_date = timezone.now() - delta
         tot = delta.total_seconds()
-        print "generating matches fro last ", delta_days, "days, every ", delta_sec, "secs"
-        print "estimated matches to calc: ", tot/delta_sec
+        print "generating matches for last ", delta_days, "days, every ", delta_sec, "secs"
         pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage(),
                                     progressbar.Bar(), ' (', progressbar.ETA(), ') ']).start()
         pbar.maxval = tot
 
-        n=0
-        while start_date < timezone.now():
-            sys.stdout = fake_stdout
+        with atomic():
+            n=0
+            while start_date < timezone.now():
+                sys.stdout = fake_stdout
 
-            s1, s2 = select_selfies()
-            s1_rank = ranking[str(s1.id)]*1000
-            s2_rank = ranking[str(s2.id)]*1000
-            if s1_rank > s2_rank:
-                s1_rank *= 2
-            else:
-                s2_rank *= 2
-            if randint(0, s1_rank+s2_rank) > s1_rank:
-                Match.objects.create(winner=s2, loser=s1, match_date=start_date)
-            else:
-                Match.objects.create(winner=s1, loser=s2, match_date=start_date)
+                s1, s2 = select_selfies()
+                s1_rank = ranking[str(s1.id)]*1000
+                s2_rank = ranking[str(s2.id)]*1000
+                if s1_rank > s2_rank:
+                    s1_rank *= 2
+                else:
+                    s2_rank *= 2
+                if randint(0, s1_rank+s2_rank) > s1_rank:
+                    Match.objects.create(winner=s2, loser=s1, match_date=start_date)
+                    s2.win_against(s1, start_date)
+                else:
+                    Match.objects.create(winner=s1, loser=s2, match_date=start_date)
+                    s1.win_against(s2, start_date)
 
-            sys.stdout = real_stdout
-            start_date += timezone.timedelta(seconds=delta_sec)
-            n += delta_sec
-            if n > pbar.maxval:
-                n = pbar.maxval
-            pbar.update(n)
-        pbar.update(pbar.maxval)
-        print ""
+                sys.stdout = real_stdout
+                start_date += timezone.timedelta(seconds=delta_sec)
+                n += delta_sec
+                if n > pbar.maxval:
+                    n = pbar.maxval
+                pbar.update(n)
+            pbar.update(pbar.maxval)
+            print ""
 
     except IOError:
         print "error: rankings not founds!"

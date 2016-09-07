@@ -202,7 +202,7 @@ class Selfie(models.Model):
                 pbar.update(i)
         pbar.update(pbar.maxval)
 
-        print "\ncalculate matches"
+        print "\ncalculate matches (" + str(Match.objects.count()) + ")"
         pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage(),
                                     progressbar.Bar(), ' (', progressbar.ETA(), ') ']).start()
         tot = Match.objects.count()
@@ -210,6 +210,14 @@ class Selfie(models.Model):
         n = 0
         with atomic():
             for m in Match.objects.order_by("match_date"):
+                if m.winner.pub_date > m.match_date:
+                    m.winner.pub_date = m.match_date
+                    m.winner.save()
+
+                if m.loser.pub_date > m.match_date:
+                    m.loser.pub_date = m.match_date
+                    m.loser.save()
+
                 m.winner.win_against(m.loser, m.match_date)
                 n += 1
 
@@ -217,8 +225,7 @@ class Selfie(models.Model):
         pbar.update(pbar.maxval)
         print ""
 
-    def win_against(self, loser, date=timezone.now()):
-        Match.objects.create(winner=self, loser=loser, match_date=date)
+    def win_against(self, loser, date):
 
         self.won += 1
         loser.loss += 1

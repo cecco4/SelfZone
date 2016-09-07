@@ -151,7 +151,8 @@ def vote(request, s1_id, s2_id, voted):
         winner = s2
         loser = s1
 
-    winner.win_against(loser)
+    m = Match.objects.create(winner=winner, loser=loser, match_date=timezone.now())
+    winner.win_against(loser, m.match_date)
     # return HttpResponse("Won " + str(sW.id) + ": " + str(sW.won) + "/" + str(sW.loss) + "\n" +
     #                    "Lost " + str(sL.id) + ": " + str(sL.won) + "/" + str(sL.loss) + "\n")
     return HttpResponseRedirect(reverse('selfzone:index_voted', args=(s1.id, s2.id, voted)))
@@ -174,8 +175,8 @@ def details(request, selfie_id):
             color = "red"
         lasts.append({"selfie": s, "color": color})
 
-    # scores graph for last 60 days
-    days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(60)]
+    # scores graph for last 15 days
+    days = [timezone.now().date() - timezone.timedelta(days=i) for i in range(15)]
     score = selfie.score
     scores = []
     allmatch = matches.order_by("match_date")

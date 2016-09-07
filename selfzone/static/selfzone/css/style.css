@@ -450,6 +450,12 @@ body {
     min-width: 50%;
 }
 
-table, td, th {
-    border: 1px solid #da00ba;
+.table-row {
+    display: table;
+    table-layout: fixed;
+}
+
+.table-row [class^="col-"] {
+    display: table-cell;
+    float: none;
 }
