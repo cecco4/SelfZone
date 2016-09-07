@@ -7,10 +7,14 @@ from django import forms
 from django.db.transaction import atomic
 import angus
 import sys
+import progressbar
 from progressbar import ProgressBar
 
 
 # Create your models here.
+from requests import ConnectionError
+
+
 class Tag(models.Model):
     tag = models.CharField(max_length=128)
     priority = models.IntegerField(default=0)
@@ -65,22 +69,25 @@ class Selfie(models.Model):
         return str(self.id)
 
     def analyze(self):
-        services = ('age_and_gender_estimation', 'face_expression_estimation', 'gaze_analysis')
-        url = "https://gate.angus.ai"
-        c_id = "1269cac4-3537-11e6-819d-0242ac110002"
-        a_tk = "b407f040-fca7-4dfa-80de-f7399deed597"
-        conf = angus.get_default_configuration()
-        conf.set_credential(client_id=c_id, access_token=a_tk)
+        try:
+            services = ('age_and_gender_estimation', 'face_expression_estimation', 'gaze_analysis')
+            url = "https://gate.angus.ai"
+            c_id = "1269cac4-3537-11e6-819d-0242ac110002"
+            a_tk = "b407f040-fca7-4dfa-80de-f7399deed597"
+            conf = angus.get_default_configuration()
+            conf.set_credential(client_id=c_id, access_token=a_tk)
 
-        conn = angus.connect(url=url, conf=conf)
-        s = conn.services.get_services(services)
-        job = s.process({'image': open(self.photo.path)})
-        res = job.result
+            conn = angus.connect(url=url, conf=conf)
+            s = conn.services.get_services(services)
+            job = s.process({'image': open(self.photo.path)})
+            res = job.result
 
-        res_age_gender = res['age_and_gender_estimation']
-        res_expr = res['face_expression_estimation']
-        res_gaze = res['gaze_analysis']
-        self.faces = int(res_age_gender['nb_faces'])
+            res_age_gender = res['age_and_gender_estimation']
+            res_expr = res['face_expression_estimation']
+            res_gaze = res['gaze_analysis']
+            self.faces = int(res_age_gender['nb_faces'])
+        except ConnectionError:
+            return
 
         tags = []
         for face in res_age_gender['faces']:
@@ -196,7 +203,8 @@ class Selfie(models.Model):
         pbar.update(pbar.maxval)
 
         print "\ncalculate matches"
-        pbar = ProgressBar().start()
+        pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage(),
+                                    progressbar.Bar(), ' (', progressbar.ETA(), ') ']).start()
         tot = Match.objects.count()
         pbar.maxval = tot
         n = 0

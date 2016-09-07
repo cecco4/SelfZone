@@ -81,7 +81,7 @@ if queryYN("reload selfies?", "no"):
 
     print str(len(selfies_imgs.keys())) + " selfies to upload..."
     pics = selfies_imgs.keys()
-    pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage,
+    pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage(),
                                 progressbar.Bar(), ' (', progressbar.ETA(), ') ']).start()
     tot = len(pics)
     pbar.maxval = tot
@@ -103,7 +103,7 @@ if queryYN("reload selfies?", "no"):
         pbar.update(i)
     pbar.update(pbar.maxval)
     ass.close()
-    print ""
+    print "analyze error selfies: ", Selfie.get_unrecognized().count()
 
 if queryYN("generate votes"):
     print "load rankings..."
@@ -131,35 +131,37 @@ if queryYN("generate votes"):
         tot = delta.total_seconds()
         print "generating matches fro last ", delta_days, "days, every ", delta_sec, "secs"
         print "estimated matches to calc: ", tot/delta_sec
-        pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage,
+        pbar = ProgressBar(widgets=[' [', progressbar.Timer(), '] ', progressbar.Percentage(),
                                     progressbar.Bar(), ' (', progressbar.ETA(), ') ']).start()
         pbar.maxval = tot
 
-        with atomic():
-            n=0
-            while start_date < timezone.now():
-                sys.stdout = fake_stdout
+        n=0
+        while start_date < timezone.now():
+            sys.stdout = fake_stdout
 
-                s1, s2 = select_selfies()
-                s1_rank = ranking[str(s1.id)]*1000
-                s2_rank = ranking[str(s2.id)]*1000
-                if s1_rank > s2_rank:
-                    s1_rank *= 2
-                else:
-                    s2_rank *= 2
-                if randint(0, s1_rank+s2_rank) > s1_rank:
-                    s2.win_against(s1, start_date)
-                else:
-                    s1.win_against(s2, start_date)
+            s1, s2 = select_selfies()
+            s1_rank = ranking[str(s1.id)]*1000
+            s2_rank = ranking[str(s2.id)]*1000
+            if s1_rank > s2_rank:
+                s1_rank *= 2
+            else:
+                s2_rank *= 2
+            if randint(0, s1_rank+s2_rank) > s1_rank:
+                Match.objects.create(winner=s2, loser=s1, match_date=start_date)
+            else:
+                Match.objects.create(winner=s1, loser=s2, match_date=start_date)
 
-                sys.stdout = real_stdout
-                start_date += timezone.timedelta(seconds=delta_sec)
-                n += delta_sec
-                if n > pbar.maxval:
-                    n = pbar.maxval
-                pbar.update(n)
-            pbar.update(pbar.maxval)
-            print ""
+            sys.stdout = real_stdout
+            start_date += timezone.timedelta(seconds=delta_sec)
+            n += delta_sec
+            if n > pbar.maxval:
+                n = pbar.maxval
+            pbar.update(n)
+        pbar.update(pbar.maxval)
+        print ""
 
     except IOError:
         print "error: rankings not founds!"
+
+if queryYN("recalculate all"):
+    Selfie.recalculate_all()

@@ -240,16 +240,16 @@ def stats(request):
     surprise    = Selfie.get_tagged("surprise").count()
 
     data = [("gender", "percentage"), ("male", male), ("female", female)]
-    chart = PieChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
+    chart = PieChart(SimpleDataSource(data=data), width="100%")
     context['gender_chart'] = chart
 
     data = [("age", "percentage"), ("baby", baby), ("young", young), ("old", old)]
-    chart = PieChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
+    chart = PieChart(SimpleDataSource(data=data), width="100%")
     context['age_chart'] = chart
 
     data = [("face expression", "percentage"), ("neutral", neutral), ("sad", sad),
             ("anger", anger), ("happiness", happiness), ("surprise", surprise)]
-    chart = PieChart(SimpleDataSource(data=data), options={'title': "win vs loss"}, width="100%")
+    chart = PieChart(SimpleDataSource(data=data), width="100%")
     context['face_chart'] = chart
 
     context['allTimeBest']  = Selfie.objects.all().order_by("-score").all()[:3]

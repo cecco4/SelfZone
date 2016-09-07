@@ -10,11 +10,21 @@
 
 {% block body %}
     <div class="row">
-        <div class="col-md-6">{{ gender_chart.as_html }}</div>
-        <div class="col-md-6">{{ age_chart.as_html }}</div>
-        <div class="col-md-6">{{ face_chart.as_html }}</div>
+        <div class="row" style="margin-bottom: 20px">
+            <div class="col-md-6" style="color: #da00ba; margin-top: 20px">
+                Uploaded selfie<br>
+                <div class="score-box" style="text-align: center"><h3>{{ tot_selfie }}</h3></div>
+            </div>
+             <div class="col-md-6" style="color: #da00ba; margin-top: 20px">
+                Matches taken<br>
+                <div class="score-box" style="text-align: center"><h3>{{ tot_matches }}</h3></div>
+            </div>
+        </div>
+        <div class="col-md-4">{{ gender_chart.as_html }}</div>
+        <div class="col-md-4">{{ age_chart.as_html }}</div>
+        <div class="col-md-4">{{ face_chart.as_html }}</div>
     </div>
-    <div class="row" style="margin: 20px">
+    <div class="row" style="margin: 20px; margin-top: 0">
         <div class="col-md-6">
 
             <h2>Bests</h2>
