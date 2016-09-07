@@ -1,7 +1,19 @@
 {% extends 'selfzone/base.html' %}
 {% load staticfiles %}
 
+{% block head %}
+    <script type="text/javascript" src="https://www.google.com/jsapi" xmlns="http://www.w3.org/1999/html"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart"]});
+    </script>
+{% endblock %}
+
 {% block body %}
+    <div class="row">
+        <div class="col-md-6">{{ gender_chart.as_html }}</div>
+        <div class="col-md-6">{{ age_chart.as_html }}</div>
+        <div class="col-md-6">{{ face_chart.as_html }}</div>
+    </div>
     <div class="row" style="margin: 20px">
         <div class="col-md-6">
 
