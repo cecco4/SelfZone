@@ -138,32 +138,33 @@ if queryYN("generate votes"):
                                     progressbar.Bar(), ' (', progressbar.ETA(), ') ']).start()
         pbar.maxval = tot
 
-        n=0
-        while start_date < timezone.now():
-            sys.stdout = fake_stdout
+        with atomic():
+            n=0
+            while start_date < timezone.now():
+                sys.stdout = fake_stdout
 
-            s1, s2 = select_selfies()
-            s1_rank = ranking[str(s1.id)]*1000
-            s2_rank = ranking[str(s2.id)]*1000
-            if s1_rank > s2_rank:
-                s1_rank *= 2
-            else:
-                s2_rank *= 2
-            if randint(0, s1_rank+s2_rank) > s1_rank:
-                Match.objects.create(winner=s2, loser=s1, match_date=start_date)
-                s2.win_against(s1, start_date)
-            else:
-                Match.objects.create(winner=s1, loser=s2, match_date=start_date)
-                s1.win_against(s2, start_date)
+                s1, s2 = select_selfies()
+                s1_rank = ranking[str(s1.id)]*1000
+                s2_rank = ranking[str(s2.id)]*1000
+                if s1_rank > s2_rank:
+                    s1_rank *= 2
+                else:
+                    s2_rank *= 2
+                if randint(0, s1_rank+s2_rank) > s1_rank:
+                    Match.objects.create(winner=s2, loser=s1, match_date=start_date)
+                    s2.win_against(s1, start_date)
+                else:
+                    Match.objects.create(winner=s1, loser=s2, match_date=start_date)
+                    s1.win_against(s2, start_date)
 
-            sys.stdout = real_stdout
-            start_date += timezone.timedelta(seconds=delta_sec)
-            n += delta_sec
-            if n > pbar.maxval:
-                n = pbar.maxval
-            pbar.update(n)
-        pbar.update(pbar.maxval)
-        print ""
+                sys.stdout = real_stdout
+                start_date += timezone.timedelta(seconds=delta_sec)
+                n += delta_sec
+                if n > pbar.maxval:
+                    n = pbar.maxval
+                pbar.update(n)
+            pbar.update(pbar.maxval)
+            print ""
 
     except IOError:
         print "error: rankings not founds!"
