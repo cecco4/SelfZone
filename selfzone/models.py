@@ -86,7 +86,7 @@ class Selfie(models.Model):
             res_expr = res['face_expression_estimation']
             res_gaze = res['gaze_analysis']
             self.faces = int(res_age_gender['nb_faces'])
-        except ConnectionError:
+        except Exception:
             return
 
         tags = []
@@ -210,22 +210,19 @@ class Selfie(models.Model):
         n = 0
         with atomic():
             for m in Match.objects.order_by("match_date"):
-                if m.winner.pub_date > m.match_date:
-                    m.winner.pub_date = m.match_date
-                    m.winner.save()
-
-                if m.loser.pub_date > m.match_date:
-                    m.loser.pub_date = m.match_date
-                    m.loser.save()
-
                 m.winner.win_against(m.loser, m.match_date)
                 n += 1
-
                 pbar.update(n)
         pbar.update(pbar.maxval)
         print ""
 
     def win_against(self, loser, date):
+
+        # change pub_date if before the match
+        if date < self.pub_date:
+            self.pub_date = date
+        if date < loser.pub_date:
+            loser.pub_date = date
 
         self.won += 1
         loser.loss += 1
