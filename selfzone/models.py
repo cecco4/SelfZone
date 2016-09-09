@@ -148,7 +148,7 @@ class Selfie(models.Model):
         return self.faces
 
     def analyzed(self):
-        return self.tags.count() > 0
+        return self.faces > 0
     analyzed.boolean = True
 
     def get_position(self):

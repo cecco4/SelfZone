@@ -24,7 +24,7 @@
 \clearpage
 
 \section{Traccia}
-\textbf{Sito in stile Kittenwar}\\
+\paragraph{Sito in stile Kittenwar}\mbox{}\\
 Creare uno sito sullo stile di kittenwar (www.kittenwar.com) che propone un approccio di tipo
 crowdsourcing per l'ordinamento di immagini su un tema specifico.
 In pratica, si parte da un set prefissato di immagini in cui ogni immagine è associata ad un
@@ -65,7 +65,7 @@ Il processo di registrazione e login è implementato secondo gli standard di Dja
 Pagine in cui i visitatori possono votare il selfie più bello fra due proposti, una volta fatta la propria scelta verrà visualizzato la percentuale di persone che hanno votato come il visitatore.\\
 \`E possibile decidere di non votare e passare alla prossima sfida ricaricando la pagina o cliccando sul banner del sito.
 
-\paragraph*{Dettagli implementativi}
+\paragraph{Dettagli implementativi}
 La scelta dei due selfie sfidanti viene effettuata tramite un algoritmo che tenta di proporre immagini simili o comunque con aspetti comuni da far sfidare:
 \begin{itemize}
 \item selezione casuale del primo selfie
@@ -79,7 +79,7 @@ I tag applicati alle immagini hanno quindi particolare importanza nella scelta d
 Form di upload delle immagini, riservato agli utenti iscritti.
 Permette di caricare un immagine e inserire una descrizione\\
 
-\paragraph*{Dettagli implementativi}
+\paragraph{Dettagli implementativi}
 Per una migliore fruizione del sito, immagine deve essere obbligatoriamente quadrata, qualora non lo fosse l'utente può tagliarla sul momento tramite un utility in javascript.\\
 Subito dopo l'upload sul server viene eseguita sull'immagine un analisi facciale delle persone appoggiandosi al un servizio esterno Angus.ai, tramite il quale vengono calcolati i tags da associare all'immagine.
 I tag riguardano, ordinati per importanza, il sesso, l'età, l'espressione, l'inclinazione della testa e la direzione dello sguardo.
@@ -88,7 +88,7 @@ Qualora l'analisi non produca risultati l'immagine deve essere approvata da un a
 \subsection{Details}
 Nella pagina dei dettagli vengono presentate le statistiche di una particolare selfie. Vengono visualizzati lo score, le sfide vinte e perse, la posizione nel ranking, un grafico dell'andamento del punteggio negli ultimi giorni, il selfie con cui ha vinto e perso di più e il risultato delle ultime 10 sfide.
 
-\paragraph*{Dettagli implementativi}
+\paragraph{Dettagli implementativi}
 Il grafico del punteggio è costruito e visualizzato utilizzando il servizio javascript di google-charts
 
 \subsection{Stats}
@@ -97,8 +97,15 @@ La pagina delle statistiche visualizza i primi 3 e gli ultimi 3 selfie nel ranki
 \subsection{Pannello utente}
 Dal pannello utente è possibile avere informazioni sui propri selfie; vengono mostrati il selfie che sta attualmente migliorando di più e quello di meno, il peggiore e migliore selfie di oggi e della settimana, il selfie col punteggio migliore nel giorno del caricamento e il peggiore. Inoltre viene visualizzata la lista di tutti i selfie caricati con la possibilità di ordinamento in base a score e data di caricamento.
 
-\paragraph*{Dettagli implementativi}
+\paragraph{Dettagli implementativi}
 Nella lista dei selfie per ogni immagine è applicata un etichetta con la posizione nel ranking generale e una barra di stato che riassume il ratio di vittorie/sconfitte.
+
+\subsection{Amministrazione}
+Dal pannello di amministrazione è possibile visualizzare tutti i selfie caricati e modificare i parametri fondamentali. Nel caso un selfie caricato abbia prodotto un errore in fase di analisi facciale viene segnato con una spunta rossa in questo pannello, è quindi possibile assegnare i tag manualmente e abilitare di conseguenza il selfie.
+
+\paragraph{Dettagli implementativi}
+\'E possibile ordinare i selfie in base a utente, data di pubblicazione, id e score; si possono inoltre effettuare ricerche nelle descrizioni delle immagini e filtrare per tag.
+
 
 \section{Struttura dati}
 \proj si compone di diverse tabelle\\

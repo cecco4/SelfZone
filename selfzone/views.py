@@ -54,8 +54,14 @@ def index_voted(request, old1_id, old2_id, voted):
 
 def select_selfies():
     withtags = Selfie.objects.exclude(tags=None)
+    if withtags.count() == 0:
+        return None, None
+
     # first selfie is random
     s1 = withtags.all()[randint(0, withtags.count()-1)]
+
+    if withtags.count() == 1:
+        return s1, None
 
     # select selfies with same (or less) number of faces (minimun 5 selfies)
     tries = 0

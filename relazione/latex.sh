@@ -1,4 +1,4 @@
-old="automatic rebuild pdf"
+old="automatic_rebuild_pdf"
 
 while true; do
     sleep 1
