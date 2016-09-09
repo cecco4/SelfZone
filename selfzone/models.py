@@ -20,7 +20,7 @@ class Tag(models.Model):
     priority = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.tag
+        return "Tag: " + self.tag + ", P: " + str(self.priority)
 
     @staticmethod
     def init_tags():
@@ -66,7 +66,7 @@ class Selfie(models.Model):
     tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
-        return str(self.id)
+        return str("Selfie, id: ") + str(self.id) + ", user: " + str(self.user)
 
     def analyze(self):
         try:
@@ -146,6 +146,10 @@ class Selfie(models.Model):
             self.tags.add(tag)
         self.save()
         return self.faces
+
+    def analyzed(self):
+        return self.tags.count() > 0
+    analyzed.boolean = True
 
     def get_position(self):
         return Selfie.objects.filter(score__gt=self.score).count() + 1
@@ -252,7 +256,7 @@ class Match(models.Model):
     match_date = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
-        return str(self.match_date) + " " + str(self.winner) + "-" + str(self.loser)
+        return "Match, date: " + str(self.match_date) + " " + str(self.winner) + "-" + str(self.loser)
 
 
 class History(models.Model):
@@ -272,7 +276,7 @@ class History(models.Model):
         return self.selfie.lost_match_set.filter(match_date__gte=start, match_date__lte=end).count()
 
     def __unicode__(self):
-        return str(self.selfie) + " " + str(self.date) + " score: " + str(self.score)
+        return str(self.selfie.id) + " " + str(self.date) + " score: " + str(self.score)
 
 
 class SelfieForm(forms.ModelForm):

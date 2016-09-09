@@ -78,8 +78,8 @@
 
     <br>
     {% if lasts %}
-    <div class="table-row" style="vertical-align: middle; padding: 20px">
-        <div class="col-sm-2"> <h4>lasts matches: </h4> </div>
+    <div class="table-row" style="padding: 20px">
+        <div class="col-sm-2" style="vertical-align: middle;"> <h4>lasts matches: </h4> </div>
         <div class="col-sm-10">
             {% for s in lasts %}
                 <a href="{% url 'selfzone:details' s.selfie.id %}"><img
