@@ -69,6 +69,9 @@ def select_selfies():
     while f.count() <= 5:
         tries += 1
         f = Selfie.objects.exclude(id=s1.id).filter(faces__gte=s1.faces-tries, faces__lte=s1.faces)
+        if tries > 10:
+            f = Selfie.objects.exclude(id=s1.id)
+            return s1, f.all()[randint(0, f.count()-1)]
 
     # start filtring by tags (random weighted by priority)
     limit = int(f.count()*5/100 + 5) # minimum: 5%

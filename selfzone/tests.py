@@ -51,19 +51,19 @@ class SelfieMethodTests(TestCase):
         first_date = timezone.now() - timezone.timedelta(days=1)
         m = Match.objects.create(winner=s1, loser=s2, match_date=first_date)
         s1.win_against(s2, m.match_date)
-        self.assertEquals(s1.score, 1500.5)
-        self.assertEquals(s2.score, 1499.5)
+        self.assertEquals(s1.score, 1501.0)
+        self.assertEquals(s2.score, 1499.0)
 
         m = Match.objects.create(winner=s1, loser=s2, match_date=timezone.now())
         s1.win_against(s2, m.match_date)
-        self.assertEquals(s1.score, 1500.75)
-        self.assertEquals(s2.score, 1499.25)
+        self.assertEquals(s1.score, 1501.5)
+        self.assertEquals(s2.score, 1498.5)
         self.assertEquals(History.objects.count(), 4)
         self.assertEquals(s1.pub_date, first_date)
 
         self.assertEquals(s1.get_position(), 1)
-        self.assertEquals(s1.first_day_score(), 1500.5)
+        self.assertEquals(s1.first_day_score().score, 1501.0)
 
     def test_tag(self):
         self.init_selfie()
-        self.assertEquals(Selfie.get_tagged(Tag.objects.all()[0]).count(), 1)
+        self.assertEquals(Selfie.get_tagged("male").count(), 1)
