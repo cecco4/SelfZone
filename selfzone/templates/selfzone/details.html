@@ -15,7 +15,9 @@
             <div class="row"><img class="new-img" style="width: 80%;" src="{{ selfie.photo.url }}"></div>
             <div class="row"><h4>{{ selfie.info }} <h3 class="row text-primary">@{{ selfie.user }}</h3></h4></div>
         </div>
+
         <div class="col-sm-8" style="text-align: center; padding: 30px;">
+        {% if selfie.analyzed %}
             <div class="row" style="color: #da00ba">
                 score<br>
                 <div class="score-box" style="text-align: center"><h3>{{ selfie.score | floatformat:3}}</h3></div>
@@ -36,19 +38,13 @@
                 position<br>
                 <div class="score-box" style="text-align: center"><h3>{{ pos }}</h3></div>
             </div>
-
-            <!--
-
-            tags:
-            {% for t in selfie.tags.all %}
-                {{ t.tag }}{% if forloop.counter != selfie.tags.count %},{% endif %}
-            {% endfor %}
-            <br>
-
-            user: {{ selfie.user }}
-            -->
         </div>
+        {% else %}
+        <h3>this selfie is not approved yet</h3>
+        {% endif %}
     </div>
+
+    {% if selfie.analyzed %}
     <div class="row" style="margin-top: 25px">
         <div class="col-sm-8">
             <h3>match trend:</h3>
@@ -89,5 +85,5 @@
         </div>
     </div>
     {% endif %}
-
+    {% endif %}
 {% endblock body %}
