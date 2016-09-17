@@ -43,7 +43,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if not(options["delete"] or options["gen"] or options["recalc"]) and options["autogen_votes"] is False:
+        if options["delete"] is False and options["gen"] is False and options["recalc"] is False \
+           and options["autogen_votes"] is False:
             options["delete"] = []
             options["gen"] = []
             options["recalc"] = True

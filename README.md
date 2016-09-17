@@ -4,8 +4,8 @@ Selfzone is a image ranking online platform
 #### Set up enviroment
 execute the script "init_database.sh" or follow the coming steps
 
-##### Dependencies:
-Install dependencies on Debian:
+##### Dependencies
+Check your mysql DBMS, then install dependencies; on Debian:
 ~~~bash
 apt install python2.7 mysql-server libmysqlclient-dev virtualenv
 ~~~
@@ -38,4 +38,9 @@ pip install -r requirements.txt
 ~~~bash
 python manage.py makemigrations
 python manage.py migrate
+~~~
+
+##### Start server
+~~~bash
+python manage.py runserver 8000
 ~~~

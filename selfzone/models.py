@@ -181,14 +181,7 @@ class Selfie(models.Model):
     @staticmethod
     def recalculate_all():
         print "delete history"
-        pbar = ProgressBar().start()
-        tot = History.objects.count()
-        pbar.maxval = tot
-        with atomic():
-            for i in xrange(0, tot):
-                History.objects.all()[0].delete()
-                pbar.update(i)
-        pbar.update(pbar.maxval)
+        History.objects.all().delete()
 
         print "\nreinit selfie data"
         pbar = ProgressBar().start()

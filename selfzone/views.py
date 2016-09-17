@@ -74,7 +74,7 @@ def select_selfies():
             return s1, f.all()[randint(0, f.count()-1)]
 
     # start filtring by tags (random weighted by priority)
-    limit = int(f.count()*5/100 + 5) # minimum: 5%
+    limit = int(f.count()*5/100 + 5)  # minimum: 5%
     print "Start search from ", f.count(), limit
 
     tag_weights = [float(i.priority)+1 for i in s1.tags.all()]

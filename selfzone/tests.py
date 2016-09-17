@@ -67,3 +67,21 @@ class SelfieMethodTests(TestCase):
     def test_tag(self):
         self.init_selfie()
         self.assertEquals(Selfie.get_tagged("male").count(), 1)
+
+    def test_details(self):
+        self.init_selfie()
+
+        s = Selfie.objects.all()[0]
+        urllib.urlretrieve("http://blog.oxforddictionaries.com/wp-content/uploads/selfie4.jpg", "photo.jpg")
+        s.photo = File(open("photo.jpg"))
+        s.save()
+        page = self.client.get("/selfzone/details/"+str(s.id))
+        self.assertEquals(str(page).find("this selfie is not approved yet") < 0, True)
+
+        Tag.objects.filter(selfie=s).delete()
+        s.faces = 0
+        s.save()
+        page = self.client.get("/selfzone/details/"+str(s.id))
+        self.assertEquals(str(page).find("this selfie is not approved yet") >= 0, True)
+
+        os.remove("photo.jpg")

@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{blindtext}
 \usepackage[utf8]{inputenc}
-\usepackage{graphicx}
+\usepackage{graphicx, wrapfig}
 
 \newcommand{\proj}{\textit{Selfzone }}
 
@@ -55,15 +55,20 @@ Il progetto \proj è un sito sviluppato con il framework Django che si propone c
 In seguito una presentazione delle pagine del sito
 
 
-
 \subsection{Registrazione e Login}
+\includegraphics[width=0.5\textwidth, height=0.35\textwidth]{res/login.png}
+\includegraphics[width=0.5\textwidth, height=0.35\textwidth]{res/register.png}
 Pagine in cui è possibile registrare un nuovo utente e quindi eseguire il login.\\
+
 \paragraph*{Dettagli implementativi}
 Il processo di registrazione e login è implementato secondo gli standard di Django in modo da assicurare un buon livello di sicurezza.
 
+\clearpage
 \subsection{Home}
+\begin{center}\includegraphics[width=0.75\textwidth]{res/home.png}\end{center}\\
 Pagine in cui i visitatori possono votare il selfie più bello fra due proposti, una volta fatta la propria scelta verrà visualizzato la percentuale di persone che hanno votato come il visitatore.\\
-\`E possibile decidere di non votare e passare alla prossima sfida ricaricando la pagina o cliccando sul banner del sito.
+\`E possibile decidere di non votare e passare alla prossima sfida ricaricando la pagina o cliccando sul banner del sito.\\
+\begin{center}\includegraphics[width=0.75\textwidth]{res/home2.png}\end{center}
 
 \paragraph{Dettagli implementativi}
 La scelta dei due selfie sfidanti viene effettuata tramite un algoritmo che tenta di proporre immagini simili o comunque con aspetti comuni da far sfidare:
@@ -79,6 +84,9 @@ I tag applicati alle immagini hanno quindi particolare importanza nella scelta d
 Form di upload delle immagini, riservato agli utenti iscritti.
 Permette di caricare un immagine e inserire una descrizione\\
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\includegraphics[width=0.5\textwidth]{res/upload.png}
+\end{wrapfigure} 
 \paragraph{Dettagli implementativi}
 Per una migliore fruizione del sito, immagine deve essere obbligatoriamente quadrata, qualora non lo fosse l'utente può tagliarla sul momento tramite un utility in javascript.\\
 Subito dopo l'upload sul server viene eseguita sull'immagine un analisi facciale delle persone appoggiandosi al un servizio esterno Angus.ai, tramite il quale vengono calcolati i tags da associare all'immagine.
@@ -86,16 +94,21 @@ I tag riguardano, ordinati per importanza, il sesso, l'età, l'espressione, l'in
 Qualora l'analisi non produca risultati l'immagine deve essere approvata da un admin che provvederà ad applicare manualmente i tags o scartare l'immagine nel caso non segui le linee guida della piattaforma.
 
 \subsection{Details}
+\begin{center}\includegraphics[width=0.75\textwidth]{res/details.png}\end{center}\\
 Nella pagina dei dettagli vengono presentate le statistiche di una particolare selfie. Vengono visualizzati lo score, le sfide vinte e perse, la posizione nel ranking, un grafico dell'andamento del punteggio negli ultimi giorni, il selfie con cui ha vinto e perso di più e il risultato delle ultime 10 sfide.
 
 \paragraph{Dettagli implementativi}
 Il grafico del punteggio è costruito e visualizzato utilizzando il servizio javascript di google-charts
 
 \subsection{Stats}
+\begin{center}\includegraphics[width=0.75\textwidth]{res/stat.png}\end{center}\\
 La pagina delle statistiche visualizza i primi 3 e gli ultimi 3 selfie nel ranking giornaliero, settimanale e totale; è unoltre possibile visualizzare la classifica completa cliccando sull'immagine dei tre puntini in ogni classifica.
+\begin{center}\includegraphics[width=0.75\textwidth]{res/stat2.png}\end{center}\\
 
 \subsection{Pannello utente}
+\begin{center}\includegraphics[width=0.75\textwidth]{res/panel.png}\end{center}\\
 Dal pannello utente è possibile avere informazioni sui propri selfie; vengono mostrati il selfie che sta attualmente migliorando di più e quello di meno, il peggiore e migliore selfie di oggi e della settimana, il selfie col punteggio migliore nel giorno del caricamento e il peggiore. Inoltre viene visualizzata la lista di tutti i selfie caricati con la possibilità di ordinamento in base a score e data di caricamento.
+\begin{center}\includegraphics[width=0.75\textwidth]{res/panel2.png}\end{center}\\
 
 \paragraph{Dettagli implementativi}
 Nella lista dei selfie per ogni immagine è applicata un etichetta con la posizione nel ranking generale e una barra di stato che riassume il ratio di vittorie/sconfitte.
