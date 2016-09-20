@@ -24,6 +24,9 @@ class Tag(models.Model):
 
     @staticmethod
     def init_tags():
+        if Tag.objects.count() == 27:
+            return
+
         Tag.objects.update_or_create(tag="female",            defaults={"priority": 4})
         Tag.objects.update_or_create(tag="male",              defaults={"priority": 4})
         Tag.objects.update_or_create(tag="neutral",           defaults={"priority": 3})
@@ -139,6 +142,7 @@ class Selfie(models.Model):
             elif face['gaze_yaw'] >  0.2: tags.append("eye_left")
             else:                         tags.append("eye_zero")
 
+        Tag.init_tags()
         tags = set(tags)
         for t in tags:
             print "get", t
