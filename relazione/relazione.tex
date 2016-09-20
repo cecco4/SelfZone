@@ -65,20 +65,28 @@ Il processo di registrazione e login è implementato secondo gli standard di Dja
 
 \clearpage
 \subsection{Home}
-\begin{center}\includegraphics[width=0.75\textwidth]{res/home.png}\end{center}\\
-Pagine in cui i visitatori possono votare il selfie più bello fra due proposti, una volta fatta la propria scelta verrà visualizzato la percentuale di persone che hanno votato come il visitatore.\\
+\begin{center}\includegraphics[width=0.95\textwidth]{res/home.png}\end{center}\\
+Pagine in cui i visitatori possono votare il selfie più bello fra due proposti, una volta fatta la propria scelta verrà
+visualizzata la percentuale di persone che hanno votato come il visitatore.\\
 \`E possibile decidere di non votare e passare alla prossima sfida ricaricando la pagina o cliccando sul banner del sito.\\
-\begin{center}\includegraphics[width=0.75\textwidth]{res/home2.png}\end{center}
+\begin{center}\includegraphics[width=0.95\textwidth]{res/home2.png}\end{center}
 
 \paragraph{Dettagli implementativi}
-La scelta dei due selfie sfidanti viene effettuata tramite un algoritmo che tenta di proporre immagini simili o comunque con aspetti comuni da far sfidare:
+La scelta dei due selfie sfidanti viene effettuata tramite un algoritmo che tenta di proporre immagini simili o comunque
+con aspetti comuni da far sfidare:
+
 \begin{itemize}
 \item selezione casuale del primo selfie
-\item creazione di un gruppo di possibili selfie da selezionare partendo da i selfie con un numero di persone uguali a quello di partenza, nel caso siano pochi si abbassa il numero di persone richieste.
-\item selezione dal gruppo dei selfie con 3 tag in comune a quello di partenza. I 3 tag sono scelti randomicamente con più probabilità a quelli con maggiore priorità. Se il filtraggio in base ai tag genera un gruppo minore del 5\% di quello iniziale viene rieseguita la selezione dimezzando il limite (5\% $\to$ 2.5\%)
-\item infine dal gruppo viene selezionato il selfie randomicamente, privilegiando quelli con lo score più simile e meno match effettuati con il selfie iniziale
+\item creazione di un gruppo di possibili selfie da selezionare partendo da i selfie con un numero di persone uguali a
+quello di partenza, nel caso siano pochi si abbassa il numero di persone richieste.
+\item selezione dal gruppo dei selfie con 3 tag in comune a quello di partenza. I 3 tag sono scelti randomicamente con
+più probabilità a quelli con maggiore priorità. Se il filtraggio in base ai tag genera un gruppo minore del 5\% di quello
+iniziale viene rieseguita la selezione dimezzando il limite (5\% $\to$ 2.5\%)
+\item infine dal gruppo viene selezionato il selfie randomicamente, privilegiando quelli con lo score più simile e meno
+match effettuati con il selfie iniziale
 \end{itemize}
-I tag applicati alle immagini hanno quindi particolare importanza nella scelta dei selfie sfidanti, essi vengono calcolati automaticamente al momento di upload dell'immagine
+I tag applicati alle immagini hanno quindi particolare importanza nella scelta dei selfie sfidanti, essi vengono calcolati
+automaticamente al momento di upload dell'immagine
 
 \subsection{Upload}
 Form di upload delle immagini, riservato agli utenti iscritti.
@@ -88,40 +96,61 @@ Permette di caricare un immagine e inserire una descrizione\\
 \includegraphics[width=0.5\textwidth]{res/upload.png}
 \end{wrapfigure} 
 \paragraph{Dettagli implementativi}
-Per una migliore fruizione del sito, immagine deve essere obbligatoriamente quadrata, qualora non lo fosse l'utente può tagliarla sul momento tramite un utility in javascript.\\
-Subito dopo l'upload sul server viene eseguita sull'immagine un analisi facciale delle persone appoggiandosi al un servizio esterno Angus.ai, tramite il quale vengono calcolati i tags da associare all'immagine.
+Per una migliore fruizione del sito, immagine deve essere obbligatoriamente quadrata, qualora non lo fosse l'utente può
+tagliarla sul momento tramite un utility in javascript.\\
+Subito dopo l'upload sul server viene eseguita sull'immagine un analisi facciale delle persone appoggiandosi al un servizio
+esterno Angus.ai, tramite il quale vengono calcolati i tags da associare all'immagine.
 I tag riguardano, ordinati per importanza, il sesso, l'età, l'espressione, l'inclinazione della testa e la direzione dello sguardo.
-Qualora l'analisi non produca risultati l'immagine deve essere approvata da un admin che provvederà ad applicare manualmente i tags o scartare l'immagine nel caso non segui le linee guida della piattaforma.
+Qualora l'analisi non produca risultati l'immagine deve essere approvata da un admin che provvederà ad applicare manualmente
+i tags o scartare l'immagine nel caso non segui le linee guida della piattaforma.
 
 \subsection{Details}
-\begin{center}\includegraphics[width=0.75\textwidth]{res/details.png}\end{center}\\
-Nella pagina dei dettagli vengono presentate le statistiche di una particolare selfie. Vengono visualizzati lo score, le sfide vinte e perse, la posizione nel ranking, un grafico dell'andamento del punteggio negli ultimi giorni, il selfie con cui ha vinto e perso di più e il risultato delle ultime 10 sfide.
+\begin{center}\includegraphics[width=0.95\textwidth]{res/details.png}\end{center}\\
+Nella pagina dei dettagli vengono presentate le statistiche di una particolare selfie. Vengono visualizzati lo score,
+le sfide vinte e perse, la posizione nel ranking, un grafico dell'andamento del punteggio negli ultimi giorni, il selfie
+con cui ha vinto e perso di più e il risultato delle ultime 10 sfide.
 
 \paragraph{Dettagli implementativi}
 Il grafico del punteggio è costruito e visualizzato utilizzando il servizio javascript di google-charts
 
 \subsection{Stats}
-\begin{center}\includegraphics[width=0.75\textwidth]{res/stat.png}\end{center}\\
-La pagina delle statistiche visualizza i primi 3 e gli ultimi 3 selfie nel ranking giornaliero, settimanale e totale; è unoltre possibile visualizzare la classifica completa cliccando sull'immagine dei tre puntini in ogni classifica.
-\begin{center}\includegraphics[width=0.75\textwidth]{res/stat2.png}\end{center}\\
+\begin{center}\includegraphics[width=0.95\textwidth]{res/stat.png}\end{center}\\
+La pagina delle statistiche visualizza innanzitutto qualche dato generale su selfie esposti, correlato di 3 grafici sulla
+percentuale in base al sesso, all'età e all'espressione presenti nelle immagini caricate.
+Successivamente mostra i primi 3 e gli ultimi 3 selfie nel ranking giornaliero, settimanale e totale; è inoltre possibile
+visualizzare la classifica completa cliccando sull'immagine dei tre puntini in ogni classifica.
+%\begin{center}\includegraphics[width=0.95\textwidth]{res/stat2.png}\end{center}\\
 
 \subsection{Pannello utente}
-\begin{center}\includegraphics[width=0.75\textwidth]{res/panel.png}\end{center}\\
-Dal pannello utente è possibile avere informazioni sui propri selfie; vengono mostrati il selfie che sta attualmente migliorando di più e quello di meno, il peggiore e migliore selfie di oggi e della settimana, il selfie col punteggio migliore nel giorno del caricamento e il peggiore. Inoltre viene visualizzata la lista di tutti i selfie caricati con la possibilità di ordinamento in base a score e data di caricamento.
-\begin{center}\includegraphics[width=0.75\textwidth]{res/panel2.png}\end{center}\\
+\begin{center}\includegraphics[width=0.95\textwidth]{res/panel.png}\end{center}\\
+Dal pannello utente è possibile avere informazioni sui propri selfie; vengono mostrati il selfie che sta attualmente
+migliorando di più e quello di meno, il peggiore e migliore selfie di oggi e della settimana, il selfie col punteggio migliore
+nel giorno del caricamento e il peggiore. Inoltre viene visualizzata la lista di tutti i selfie caricati con la possibilità
+di ordinamento in base a score e data di caricamento.
+\begin{center}\includegraphics[width=0.95\textwidth]{res/panel2.png}\end{center}\\
 
 \paragraph{Dettagli implementativi}
-Nella lista dei selfie per ogni immagine è applicata un etichetta con la posizione nel ranking generale e una barra di stato che riassume il ratio di vittorie/sconfitte.
+Nella lista dei selfie per ogni immagine è applicata un etichetta con la posizione nel ranking generale e una barra di
+stato che riassume il ratio di vittorie/sconfitte.
+
+\subsection{Classifiche}
+\begin{center}\includegraphics[width=0.95\textwidth]{res/panel.png}\end{center}\\
+Pagine che mostrano le classifiche dei migliori 10 e dei peggiori 10 selfie.
+\paragraph{Dettagli implementativi}
+Ad ogni selfie è applicato un badge con la posizione in classifica
 
 \subsection{Amministrazione}
-Dal pannello di amministrazione è possibile visualizzare tutti i selfie caricati e modificare i parametri fondamentali. Nel caso un selfie caricato abbia prodotto un errore in fase di analisi facciale viene segnato con una spunta rossa in questo pannello, è quindi possibile assegnare i tag manualmente e abilitare di conseguenza il selfie.
+Dal pannello di amministrazione è possibile visualizzare tutti i selfie caricati e modificare i parametri fondamentali.
+Nel caso un selfie caricato abbia prodotto un errore in fase di analisi facciale viene segnato con una spunta rossa in questo pannello,
+è quindi possibile assegnare i tag manualmente e abilitare di conseguenza il selfie.
 
 \paragraph{Dettagli implementativi}
-\'E possibile ordinare i selfie in base a utente, data di pubblicazione, id e score; si possono inoltre effettuare ricerche nelle descrizioni delle immagini e filtrare per tag.
+\'E possibile ordinare i selfie in base a utente, data di pubblicazione, id e score; si possono inoltre effettuare
+ricerche nelle descrizioni delle immagini e filtrare per tag.
 
 
 \section{Struttura dati}
-\proj si compone di diverse tabelle\\
+\proj si compone delle seguenti tabelle\\
 \includegraphics[width=\textwidth]{res/models_diagram.png}
 \clearpage
 
@@ -167,5 +196,9 @@ Per ogni giorno salva gli score parziali di ogni selfie
 \item matches: sfide a cui ha partecipato
 \end{itemize}
 
+
+\section{Test}
+Sono stati eseguiti test d'esempio sul sistema di assegnazione dei tag, sull'algoritmo di selezione, sui punteggi assegnati
+e sulla presentazione dei dettagli di un selfie.
 
 \end{document}

@@ -7,9 +7,9 @@ import urllib
 from selfzone.models import *
 
 
-# Create your tests here.
 class SelfieMethodTests(TestCase):
 
+    # test the get_unrecognized method
     def test_unrecognized(self):
         user = User.objects.create_user('test', password='test')
 
@@ -21,6 +21,7 @@ class SelfieMethodTests(TestCase):
         s2.save()
         self.assertEquals(Selfie.get_unrecognized().count(), 1)
 
+    # init 2 selfie for further test
     def init_selfie(self):
         Tag.init_tags()
         maleT = Tag.objects.get(tag="male")
@@ -37,6 +38,7 @@ class SelfieMethodTests(TestCase):
         s2.tags.add(femaleT)
         s2.save()
 
+    # test the selection algorithm
     def test_select(self):
         self.init_selfie()
 
@@ -44,6 +46,7 @@ class SelfieMethodTests(TestCase):
         self.assertNotEqual(s1, None)
         self.assertNotEqual(s2, None)
 
+    # test  the match score calculation
     def test_match(self):
         self.init_selfie()
         s1, s2 = select_selfies()
@@ -64,10 +67,12 @@ class SelfieMethodTests(TestCase):
         self.assertEquals(s1.get_position(), 1)
         self.assertEquals(s1.first_day_score().score, 1501.0)
 
+    # test the tag
     def test_tag(self):
         self.init_selfie()
         self.assertEquals(Selfie.get_tagged("male").count(), 1)
 
+    # test the details view
     def test_details(self):
         self.init_selfie()
 
