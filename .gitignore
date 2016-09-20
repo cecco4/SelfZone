@@ -9,6 +9,9 @@ selfzone/migrations
 *.pyc
 env/
 
+*.ass
+*.sql
+
 relazione/*.aux
 relazione/*.dvi
 relazione/*.log
