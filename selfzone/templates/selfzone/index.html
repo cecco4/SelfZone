@@ -19,6 +19,7 @@
 
       <br><br>
 
+      {%  if s1 and s2 %}
       <div class="row-same-height" style="max-height: 50%; min-height: 100px">
         <div class="col-md-6 col-md-height" style="vertical-align: top">
             <div style="margin: 0 auto; width: 70%">
@@ -49,6 +50,10 @@
             </div>
         </div>
       </div>
-
+      {% else %}
+      <div class="row">
+        <h2>Not enough selfies for match</h2>
+      </div>
+      {% endif %}
   </div>
 {% endblock body %}
