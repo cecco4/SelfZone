@@ -1,5 +1,7 @@
 echo "init mysql database, please install these dependecies before init:"
+echo "  gcc"
 echo "  python2.7"
+echo "  python2.7-dev"
 echo "  mysql-server"
 echo "  libmysqlclient-dev"
 echo "  virtualenv"
@@ -16,10 +18,11 @@ rm init.sql
 echo "sql server created with permission on user: cecco, pwd: cecco"
 
 echo "create virtualenv"
-virtualenv -p python2.7 env
+virtualenv -p python2.7 env --system-site-packages
 echo "enter virtualenv"
 source env/bin/activate
 echo "install dependencies"
+pip install -U pip
 pip install -r requirements.txt
 
 echo "make migrations"

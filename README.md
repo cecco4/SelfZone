@@ -7,7 +7,7 @@ execute the script "init_database.sh" or follow the coming steps
 ##### Dependencies
 Check your mysql DBMS, then install dependencies; on Debian:
 ~~~bash
-apt install python2.7 mysql-server libmysqlclient-dev virtualenv
+apt install gcc python2.7 python2.7-dev mysql-server libmysqlclient-dev virtualenv
 ~~~
 
 ##### Prepare DBMS
@@ -24,13 +24,14 @@ GRANT ALL PRIVILEGES ON test_dbselfzone.* TO 'cecco'@'localhost' WITH GRANT OPTI
 ##### Virtualenv
 For avoid version errors is recommended to use virtualenv
 ~~~bash
-virtualenv -p python2.7 env
+virtualenv -p python2.7 env --system-site-packages
 source env/bin/activate
 ~~~
 
 ##### Requirements
 Install python requirements for the project
 ~~~bash
+pip install -U pip
 pip install -r requirements.txt
 ~~~
 
